@@ -1,12 +1,16 @@
 package warGame;
 
 import java.awt.Color;
+import java.util.ArrayList;
+
+import ch.aplu.jgamegrid.Location;
 
 public class Player {
 	
 	private String name;
 	private int money;
 	private Color color;
+	private ArrayList<Location> coloredLocs = new ArrayList<Location>();
 
 	public Player(String name) {
 		this.setName(name);
@@ -45,6 +49,14 @@ public class Player {
 
 	public void setColor(Color color) {
 		this.color = color;
+	}
+
+	public void storeColoredLocs(ArrayList<Location> coloredLocs) {
+		this.coloredLocs = coloredLocs;
+	}
+
+	public ArrayList<Location> getColoredLocs() {
+		return this.coloredLocs;
 	}
 
 }

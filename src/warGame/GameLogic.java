@@ -30,9 +30,14 @@ public class GameLogic {
 			Output.println(activePlayer.toString() + " is playing");
 			done = askIfDone();
 		}
+		prepareForNextPlayer();
+	}
+
+	private void prepareForNextPlayer() {
+		map.storeColoredLocsOf(activePlayer);
 		players.add(activePlayer);
 		activePlayer = players.remove(0);
-		map.setActivePlayer(activePlayer);
+		map.prepareFor(activePlayer);
 		
 	}
 

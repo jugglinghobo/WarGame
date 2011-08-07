@@ -3,6 +3,7 @@ package warGame;
 import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Collections;
 
 import ch.aplu.jgamegrid.*;
 
@@ -60,7 +61,6 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 	
 	public void setActivePlayer(Player p) {
 		this.activePlayer = p;
-		Output.println("active: " + p.toString());
 	}
 
 	@Override
@@ -73,5 +73,23 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 				}
 			}
 		}
+	}
+
+	public void prepareFor(Player activePlayer) {
+		setActivePlayer(activePlayer);
+		bg.clear();
+		for (Location loc : activePlayer.getColoredLocs()) {
+			bg.fillCell(loc, activePlayer.getColor(), false);
+			coloredLocs.add(loc);
+		}
+		refresh();
+		
+	}
+
+	public void storeColoredLocsOf(Player activePlayer) {
+		ArrayList<Location> locs = new ArrayList<Location>(coloredLocs);
+		activePlayer.storeColoredLocs(locs);
+		coloredLocs.clear();
+		
 	}
 }
