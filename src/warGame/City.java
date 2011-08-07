@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import ch.aplu.jgamegrid.*;
 
-public class City extends Actor{
+public class City extends MapObject{
 	
 	public enum Buildings implements Building {
 		CASERN(10), FORGE(15);
@@ -67,4 +67,7 @@ public class City extends Actor{
 		return player;
 	}
 
+	public void offerActions() {
+		Output.println("ACTIONS");
+	}
 }
