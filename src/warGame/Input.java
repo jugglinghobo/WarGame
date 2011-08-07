@@ -2,7 +2,7 @@ package warGame;
 import java.util.Scanner;
 
 
-abstract class Input {
+public abstract class Input {
 	
 	private static Input instance = new StdInput();
 	

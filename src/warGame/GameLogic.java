@@ -21,13 +21,13 @@ public class GameLogic {
 	
 	public static void main(String[] args) {
 		GameLogic game = new GameLogic();
-		while (!game.isOver()) {
+		while (game.isOver()) {
 			game.play();
 		}
 	}
 
 	private void play() {
-		System.out.println("dsndcoac");
+		System.out.println("play");
 	}
 
 	private boolean isOver() {
