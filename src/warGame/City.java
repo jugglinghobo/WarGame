@@ -27,8 +27,10 @@ public class City extends Actor{
 	private ArrayList<Building> buildings = new ArrayList<Building>();
 
 	public City(String name, Location location) {
+		super("sprites/tower.png");
 		this.setName(name);
 		this.setLocation(location);
+		show();
 	}
 
 	public void build(Building building) {
