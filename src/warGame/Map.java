@@ -1,12 +1,12 @@
 package warGame;
 
 import java.awt.Color;
-import java.awt.Component;
+import java.awt.Point;
 import java.util.ArrayList;
 
 import ch.aplu.jgamegrid.*;
 
-public class Map extends GameGrid implements GGMouseListener{
+public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListener{
 	
 	/*
 	 * This is the Game map, which is basically a GUI that shows the Players actions in real time.
@@ -15,23 +15,22 @@ public class Map extends GameGrid implements GGMouseListener{
 	private static final long serialVersionUID = 1L;
 	private ArrayList<City> cities = new ArrayList<City>();
 	private ArrayList<Location> coloredLocs = new ArrayList<Location>();
-	private ArrayList<Player> players = new ArrayList<Player>();
+	private Player activePlayer;
 	private GGBackground bg;	
 
-	public Map(ArrayList<Player> players) {
+	public Map() {
 		super(80, 50, 10, Color.LIGHT_GRAY, "sprites/map.jpg", false, true);
-		this.players = players;
 		this.bg = getBg();
-		this.setTitle("WarGame");
 		initializeCities();
-		addMouseListener(this, GGMouse.lClick | GGMouse.lDrag | GGMouse.rClick);
+		addMouseListener(this, GGMouse.lClick | GGMouse.lDrag | GGMouse.rClick | GGMouse.rDrag);
 		show();
 	}
 
 	private void initializeCities() {
-		this.cities.add(new City("Bern", new Location(20, 20)));
-		this.cities.add(new City("Basel", new Location(40, 40)));
+		this.cities.add(new City("Bern", new Location(20, 20), activePlayer));
+		this.cities.add(new City("Basel", new Location(40, 40), activePlayer));
 		for (City c : cities) {
+			c.addMouseTouchListener(this, GGMouse.lClick, true);
 			this.addActor(c, c.getLocation());
 		}
 		refresh();
@@ -41,33 +40,38 @@ public class Map extends GameGrid implements GGMouseListener{
 	@Override
 	public boolean mouseEvent(GGMouse mouse) {
 		Location clickLoc = toLocationInGrid(mouse.getX(), mouse.getY());
-		if (mouse.getEvent() == GGMouse.lClick) {
-			MapObject clicked = (MapObject) getOneActorAt(clickLoc);
-			if (clicked == null) {
-				offerActions();
-			} else {
-				clicked.offerActions();
-			}
-		}
-		if (mouse.getEvent() == GGMouse.lDrag) {
+		if (mouse.getEvent() == GGMouse.lClick || mouse.getEvent() == GGMouse.lDrag) {
 			if (!coloredLocs.contains(clickLoc)) {
 				coloredLocs.add(clickLoc);
 			}
-			bg.fillCell(clickLoc, Color.red, false);
+			bg.fillCell(clickLoc, activePlayer.getColor(), false);
 		}
-		if (mouse.getEvent() == GGMouse.rClick) {
+		
+		if (mouse.getEvent() == GGMouse.rClick || mouse.getEvent() == GGMouse.rDrag) {
 			coloredLocs.remove(clickLoc);
 			bg.clear();
 			for (Location loc : coloredLocs) {
-				bg.fillCell(loc, Color.red, false);
+				bg.fillCell(loc, activePlayer.getColor(), false);
 			}
 		}
 		refresh();
 		return true;
 	}
+	
+	public void setActivePlayer(Player p) {
+		this.activePlayer = p;
+		Output.println("active: " + p.toString());
+	}
 
-	private void offerActions() {
-		Output.println("would you like to build a defense wall?");
-		
+	@Override
+	public void mouseTouched(Actor actor, GGMouse mouse, Point spot) {
+		switch (mouse.getEvent()) {
+			case (GGMouse.lClick): {
+				if (actor != null) {
+					MapObject clicked = (MapObject) actor;
+					clicked.offerActions();
+				}
+			}
+		}
 	}
 }

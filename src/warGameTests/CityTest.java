@@ -14,8 +14,8 @@ public class CityTest {
 	@Before
 	public void initialize() {
 		Input.setInput(new MockInput());
-		Bern = new City("Bern", new Location(20, 20));
-		Basel = new City("Basel", new Location(40, 40));
+		Bern = new City("Bern", new Location(20, 20), null);
+		Basel = new City("Basel", new Location(40, 40), null);
 	}
 	
 	@Test

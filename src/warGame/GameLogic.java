@@ -1,17 +1,15 @@
 package warGame;
 
+import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Random;
 
 
 public class GameLogic {
 	
-	/*
-	 * 1. Player initialisation
-	 * 2. Map initialisation
-	 * 3. City initialisation
-	 */
 	
 	private ArrayList<Player> players = new ArrayList<Player>();
+	private Player activePlayer;
 	private Map map;
 	
 	
@@ -21,13 +19,21 @@ public class GameLogic {
 	
 	public static void main(String[] args) {
 		GameLogic game = new GameLogic();
-		while (game.isOver()) {
+		while (!game.isOver()) {
 			game.play();
 		}
 	}
 
 	private void play() {
-		System.out.println("play");
+		boolean done= false;
+		while (!done) {
+			Output.println(activePlayer.toString() + " is playing");
+			done = askIfDone();
+		}
+		players.add(activePlayer);
+		activePlayer = players.remove(0);
+		map.setActivePlayer(activePlayer);
+		
 	}
 
 	private boolean isOver() {
@@ -52,22 +58,36 @@ public class GameLogic {
 
 	private void initPlayers() {
 		boolean done = false;
+		Output.println("Welcome, please register the Players");
 		while (!done) {
 			Output.println("Add a Player:");
 			String name = Input.nextString();
 			this.players.add(new Player(name));
-			done = askIfDone();
+			if (players.size() > 1) {
+				done = askIfDone();
+			}
 		}
+		for (Player p : players) {
+			Color color = getRandomColor();
+			p.setColor(color);
+		}
+		activePlayer = players.remove(0);
 	}
 	
+	private Color getRandomColor() {
+		Random gen = new Random();
+		return new Color(gen.nextInt(256), gen.nextInt(256), gen.nextInt(256));
+	}
+
 	private void initMap() {
-		this.map = new Map(this.players);
+		this.map = new Map();
+		map.setActivePlayer(activePlayer);
 	}
 
 	private boolean askIfDone() {
 		Output.println("Done?");
 		String answer = Input.nextString();
-		if (answer.equalsIgnoreCase("yes") || answer.equalsIgnoreCase("y")) {
+		if (answer.contains("y")) {
 			return true;
 		}
 		return false;

@@ -21,13 +21,11 @@ public class City extends MapObject{
 		}
 	}
 	
-	private String name;
-	private Location location;
-	private Player player;
 	private ArrayList<Building> buildings = new ArrayList<Building>();
 
-	public City(String name, Location location) {
-		super("sprites/tower.png");
+	public City(String name, Location location, Player player) {
+		super("sprites/tower.png", name, location, player);
+		this.player = player;
 		this.setName(name);
 		this.setLocation(location);
 		show();
@@ -37,37 +35,5 @@ public class City extends MapObject{
 		if (player.canPay(building.getPrice())) {
 			this.buildings.add(building);
 		}
-	}
-	
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
-	}
-	
-	public String toString() {
-		return this.name;
-	}
-
-	public void setLocation(Location location) {
-		this.location = location;
-	}
-
-	public Location getLocation() {
-		return location;
-	}
-
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
-
-	public Player getPlayer() {
-		return player;
-	}
-
-	public void offerActions() {
-		Output.println("ACTIONS");
 	}
 }

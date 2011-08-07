@@ -1,9 +1,12 @@
 package warGame;
 
+import java.awt.Color;
+
 public class Player {
 	
 	private String name;
 	private int money;
+	private Color color;
 
 	public Player(String name) {
 		this.setName(name);
@@ -34,6 +37,14 @@ public class Player {
 		Output.println("You have not enough Money");
 		return false;
 		
+	}
+	
+	public Color getColor() {
+		return this.color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
 	}
 
 }
