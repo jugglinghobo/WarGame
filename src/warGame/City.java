@@ -23,9 +23,8 @@ public class City extends MapObject{
 	
 	private ArrayList<Building> buildings = new ArrayList<Building>();
 
-	public City(String name, Location location, Player player) {
-		super("sprites/tower.png", name, location, player);
-		this.player = player;
+	public City(String name, Location location) {
+		super("sprites/tower.png", name, location);
 		this.setName(name);
 		this.setLocation(location);
 		show();

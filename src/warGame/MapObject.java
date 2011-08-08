@@ -12,11 +12,10 @@ public abstract class MapObject extends Actor{
 	String name;
 	Location location;
 	
-	public MapObject(String imgPath, String name, Location location, Player player) {
+	public MapObject(String imgPath, String name, Location location) {
 		super(imgPath);
 		this.name = name;
 		this.location = location;
-		this.player = player;
 		setCollisionImage();
 	}
 	

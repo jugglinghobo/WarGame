@@ -3,11 +3,42 @@ package warGame;
 import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import ch.aplu.jgamegrid.*;
 
 public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListener{
+	
+	public enum PlayerSquares implements PlayerSquare {
+		DEFENSEWALL(6, 2), FARMINGLAND(3, 1);
+
+		private int price;
+		private int HP;
+		private Location loc;
+		
+		private PlayerSquares(int price, int HP) {
+			this.price = price;
+			this.HP = HP;
+		}
+		
+		public void setLocation(Location loc) {
+			this.loc = loc;
+		}
+
+		@Override
+		public int getPrice() {
+			return this.price;
+		}
+
+		@Override
+		public int getHP() {
+			return this.HP;
+		}
+
+		@Override
+		public Location getLocation() {
+			return this.loc;
+		}
+	}
 	
 	/*
 	 * This is the Game map, which is basically a GUI that shows the Players actions in real time.
@@ -23,19 +54,17 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 		super(80, 50, 10, Color.LIGHT_GRAY, "sprites/map.jpg", false, true);
 		this.bg = getBg();
 		initializeCities();
-		addMouseListener(this, GGMouse.lClick | GGMouse.lDrag | GGMouse.rClick | GGMouse.rDrag);
-		show();
 	}
 
 	private void initializeCities() {
-		this.cities.add(new City("Bern", new Location(20, 20), activePlayer));
-		this.cities.add(new City("Basel", new Location(40, 40), activePlayer));
+		this.cities.add(new City("Bern", new Location(20, 20)));
+		this.cities.add(new City("Basel", new Location(40, 40)));
+		this.cities.add(new City("Winti", new Location(30, 30)));
 		for (City c : cities) {
 			c.addMouseTouchListener(this, GGMouse.lClick, true);
 			this.addActor(c, c.getLocation());
 		}
 		refresh();
-		
 	}
 
 	@Override
@@ -47,7 +76,6 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 			}
 			bg.fillCell(clickLoc, activePlayer.getColor(), false);
 		}
-		
 		if (mouse.getEvent() == GGMouse.rClick || mouse.getEvent() == GGMouse.rDrag) {
 			coloredLocs.remove(clickLoc);
 			bg.clear();
@@ -83,13 +111,23 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 			coloredLocs.add(loc);
 		}
 		refresh();
-		
 	}
 
 	public void storeColoredLocsOf(Player activePlayer) {
 		ArrayList<Location> locs = new ArrayList<Location>(coloredLocs);
 		activePlayer.storeColoredLocs(locs);
 		coloredLocs.clear();
-		
+	}
+
+	public void activateMouseListener() {
+		this.addMouseListener(this, GGMouse.lClick | GGMouse.lDrag | GGMouse.rClick | GGMouse.rDrag);
+	}
+	
+	public void deactivateMouseListener() {
+		this.removeMouseListener(this);
+	}
+
+	public ArrayList<City> getCities() {
+		return this.cities;
 	}
 }
