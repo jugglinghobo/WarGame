@@ -11,10 +11,11 @@ public abstract class MapObject extends Actor{
 	Player player;
 	String name;
 	Location location;
+	int price;
 	
-	public MapObject(String imgPath, String name, Location location) {
-		super(imgPath);
-		this.name = name;
+	public MapObject() {
+		super();
+		this.name = setName();
 		this.location = location;
 		setCollisionImage();
 	}
@@ -46,8 +47,15 @@ public abstract class MapObject extends Actor{
 	public Player getPlayer() {
 		return player;
 	}
+	
+	public Class<? extends MapObject> type() {
+		return this.getClass();
+	}
 
-	public void offerActions() {
-		Output.println("ACTIONS");
+	public abstract int offerActions();
+
+	public int getPrice() {
+		// TODO Auto-generated method stub
+		return 0;
 	}
 }

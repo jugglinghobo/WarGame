@@ -6,50 +6,13 @@ import java.util.ArrayList;
 import ch.aplu.jgamegrid.Location;
 
 public class Player {
-	
-	public enum Warriors implements Warrior {
-		SOLDIER(4, 1, 1, 4), KNIGHT(10, 2, 3, 12);
-
-		private int price;
-		private int HP;
-		private int AP;
-		private int movement;
 		
-		private Warriors(int price, int HP, int AP, int movement) {
-			this.price = price;
-			this.HP = HP;
-			this.AP = AP;
-			this.movement = movement;
-		}
-		
-		@Override
-		public int getPrice() {
-			return price;
-		}
-
-		@Override
-		public int getHP() {
-			return this.HP;
-		}
-
-		@Override
-		public int getAP() {
-			return this.AP;
-		}
-
-		@Override
-		public int getMovement() {
-			return this.movement;
-		}
-		
-	}
-	
 	private String name;
-	private int money;
+	private int money = 3000;
 	private Color color;
 	private ArrayList<Location> coloredLocs = new ArrayList<Location>();
 	private ArrayList<City> cities = new ArrayList<City>();
-	private ArrayList<Warrior> warriors;
+	private ArrayList<Warrior> warriors = new ArrayList<Warrior>();
 
 	public Player(String name) {
 		this.setName(name);
@@ -121,23 +84,27 @@ public class Player {
 		this.cities.add(chosenCity);
 	}
 
-	public void listCities() {
+	public void listCities(ArrayList<City> cities) {
 		int i = 1;
-		for (City c : this.cities) {
+		for (City c : cities) {
 			Output.println(i + ": " + c.toString());
+			i++;
 		}
 		
 	}
 
-	public void buildDefenseWall() {
-		// TODO Auto-generated method stub
-		
+	public void build(MapObject mapObj) {
+		ArrayList<MapObject> objects = new ArrayList<MapObject>();
+		for (Location loc : coloredLocs) {
+			mapObj.setLocation(loc);
+			objects.add(mapObj);
+			if (this.canPay(mapObj.getPrice() * objects.size())) {
+				
+			}
+		}
 	}
 
-	public void buildFarmingLand() {
-		// TODO Auto-generated method stub
-		
-	}
+	
 
 	public ArrayList<City> getCities() {
 		return this.cities;
@@ -147,6 +114,16 @@ public class Player {
 		if (this.canPay(warrior.getPrice())) {
 			this.warriors.add(warrior);
 		}
+	}
+
+	public City chooseCity(ArrayList<City> cities) {
+		Output.println(this.name + ", choose a City");
+		listCities(cities);
+		int chosen = Input.nextInt()-1;
+		while (chosen > cities.size()-1) {
+			chosen = Input.nextInt()-1;
+		}
+		return cities.get(chosen);
 	}
 
 }

@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Random;
 
 import warGame.City.Buildings;
-import warGame.Player.Warriors;
 
 
 public class GameLogic {
@@ -41,8 +40,8 @@ public class GameLogic {
 			int action = offerActions();
 			switch (action) {
 			case 1: { //manage Cities
-				City chosenCity = chooseCity(activePlayer, activePlayer.getCities());
-				int cityAction = offerCityActions(chosenCity);
+				City chosenCity = activePlayer.chooseCity(activePlayer.getCities());
+				int cityAction = chosenCity.offerActions();
 				switch (cityAction) {
 				case 1: {
 					chosenCity.build(Buildings.CASERN);
@@ -51,10 +50,10 @@ public class GameLogic {
 					chosenCity.build(Buildings.FORGE);
 				} break;
 				case 3: {
-					activePlayer.create(Warriors.SOLDIER);
+					activePlayer.create(new Soldier());
 				} break;
 				case 4: {
-					activePlayer.create(Warriors.KNIGHT);
+					activePlayer.create(new Knight());
 				}
 				}
 				executeActions(activePlayer);
@@ -85,13 +84,6 @@ public class GameLogic {
 			Output.println("end of turn");
 			done = askIfDone();
 		}
-	}
-
-	private int offerCityActions(City city) {
-		Output.println("what would you like to do in " + city.toString() + "?");
-		Output.println("0: do nothing\n1: Build a casern\n2: Build a Forge\n3: create a Soldier\n4: create a Knight");
-		int action = Input.nextInt();
-		return action;
 	}
 
 	private int offerMarkedSquaresActions() {
@@ -138,25 +130,12 @@ public class GameLogic {
 		ArrayList<City> cities = new ArrayList<City>(map.getCities());
 		while (!cities.isEmpty()) {
 			Player activePlayer = this.players.remove(0);
-			City chosenCity = chooseCity(activePlayer, cities);
+			City chosenCity = activePlayer.chooseCity(cities);
 			cities.remove(chosenCity);
 			activePlayer.addCity(chosenCity);
 			chosenCity.setPlayer(activePlayer);
 			this.players.add(activePlayer);
 		}
-	}
-	
-	private City chooseCity(Player activePlayer, ArrayList<City> cities) {
-		Output.println(activePlayer.toString() + ", please choose a City");
-		listCities(cities);
-		int chosen = Input.nextInt()-1;
-		while (chosen > cities.size()-1) {
-			Output.println(activePlayer.toString() + ", please choose a City");
-			listCities(cities);
-			chosen = Input.nextInt()-1;
-		}
-		City chosenCity = cities.get(chosen);
-		return chosenCity;
 	}
 
 	public void listCities(ArrayList<City> cities) {
@@ -165,7 +144,6 @@ public class GameLogic {
 			Output.println(i + ": " + c.toString());
 			i++;
 		}
-		
 	}
 
 	private void initPlayers() {
