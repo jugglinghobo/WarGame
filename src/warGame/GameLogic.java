@@ -4,8 +4,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
-import warGame.City.Buildings;
-
+import warGame.City.Building;
 
 public class GameLogic {
 	
@@ -34,56 +33,87 @@ public class GameLogic {
 	}
 
 	private void executeActions(Player activePlayer) {
+		map.prepareFor(activePlayer);
 		boolean done= false;
 		while (!done) {
 			Output.println(activePlayer.toString() + " is playing");
 			int action = offerActions();
 			switch (action) {
-			case 1: { //manage Cities
-				City chosenCity = activePlayer.chooseCity(activePlayer.getCities());
-				int cityAction = chosenCity.offerActions();
-				switch (cityAction) {
-				case 1: {
-					chosenCity.build(Buildings.CASERN);
-					} break;
-				case 2: {
-					chosenCity.build(Buildings.FORGE);
-				} break;
-				case 3: {
-					activePlayer.create(new Soldier());
-				} break;
-				case 4: {
-					activePlayer.create(new Knight());
-				}
-				}
-				executeActions(activePlayer);
-				} break;
-			case 2: { // manage map squares
-				boolean marked = false;
-				map.activateMouseListener();
-				map.prepareFor(activePlayer);
-				while (!marked) {
-					Output.println("mark the squares you want");
-					marked = askIfDone();
-				}
-				map.storeColoredLocsOf(activePlayer);
-				map.deactivateMouseListener();
-				int markedAction = offerMarkedSquaresActions();
-				switch (markedAction) {
-				case 1: { // defenseWall
-					activePlayer.buildDefenseWall();
-					executeActions(activePlayer);
-					} break;
-				case 2: { // farming land
-					activePlayer.buildFarmingLand();
-					executeActions(activePlayer);
-					} break;
+			//manage Cities
+			case 1: {
+				boolean MenuchooseCity = false;
+				while (!MenuchooseCity) {
+					City chosenCity = activePlayer.chooseCity(activePlayer.getCities());
+					boolean MenuChooseAction = false;
+					while (!MenuChooseAction) {
+						int cityAction = chosenCity.offerActions();
+						switch (cityAction) {
+						// Casern
+						case 1: {
+							chosenCity.build(Building.CASERN);
+							} break;
+						// Forge
+						case 2: {
+							chosenCity.build(Building.FORGE);
+							} break;
+						 // Soldiers
+						case 3: {
+							int number = askForNumber();
+							activePlayer.create(new Soldier(activePlayer), number);
+							} break;
+						 // Knights
+						case 4: {
+							int number = askForNumber();
+							activePlayer.create(new Knight(activePlayer), number);
+							} break;
+						default: MenuChooseAction = true;
+						}
+					}
+					MenuchooseCity = !askIfDone("would you like to manage another City?");
 				}
 				} break;
+			// manage map squares
+			case 2: {
+				map.show();
+				boolean markedAll = false;
+				while (!markedAll) {
+					boolean marked = false;
+					map.activateMouseListener();
+					map.prepareFor(activePlayer);
+					while (!marked) {
+						marked = askIfDone("have you marked all the Squares you want?");
+					}
+					map.storeColoredLocsOf(activePlayer);
+					map.deactivateMouseListener();
+					int markedAction = offerMarkedSquaresActions();
+					switch (markedAction) {
+					// defenseWall
+					case 1: {
+						map.build(new DefenseWall());
+						marked = true;
+						} break;
+					// farming land
+					case 2: {
+						map.build(new FarmingLand());
+						marked = true;
+						} break;
+					default: {
+						markedAll = true;
+					}
+					}
+				}
+				} break;
+			default: {
+				done = askIfDone("do you really want to end your turn?");
+				map.hide();
+				}
 			}
-			Output.println("end of turn");
-			done = askIfDone();
 		}
+	}
+
+	private int askForNumber() {
+		Output.println("How many of them would you like to have?");
+		return Input.nextInt();
 	}
 
 	private int offerMarkedSquaresActions() {
@@ -95,7 +125,7 @@ public class GameLogic {
 
 	private int offerActions() {
 		Output.println("what would you like to do? please enter a number:");
-		Output.println("0: do nothing\n1:manage my cities\n2: build something on the Map");
+		Output.println("0: end turn\n1: manage my cities\n2: build something on the Map");
 		int action = Input.nextInt();
 		return action;
 	}
@@ -123,7 +153,6 @@ public class GameLogic {
 		initPlayers();
 		initMap();
 		distributeCities();
-		map.show();
 	}
 
 	private void distributeCities() {
@@ -154,7 +183,7 @@ public class GameLogic {
 			String name = Input.nextString();
 			this.players.add(new Player(name));
 			if (players.size() > 1) {
-				done = askIfDone();
+				done = askIfDone("is that all?");
 			}
 		}
 		for (Player p : players) {
@@ -172,8 +201,8 @@ public class GameLogic {
 		this.map = new Map();
 	}
 
-	private boolean askIfDone() {
-		Output.println("Done?");
+	private boolean askIfDone(String s) {
+		Output.println(s);
 		String answer = Input.nextString();
 		if (answer.contains("y")) {
 			return true;

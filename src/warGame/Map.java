@@ -8,38 +8,6 @@ import ch.aplu.jgamegrid.*;
 
 public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListener{
 	
-	public enum PlayerSquares implements PlayerSquare {
-		DEFENSEWALL(6, 2), FARMINGLAND(3, 1);
-
-		private int price;
-		private int HP;
-		private Location loc;
-		
-		private PlayerSquares(int price, int HP) {
-			this.price = price;
-			this.HP = HP;
-		}
-		
-		public void setLocation(Location loc) {
-			this.loc = loc;
-		}
-
-		@Override
-		public int getPrice() {
-			return this.price;
-		}
-
-		@Override
-		public int getHP() {
-			return this.HP;
-		}
-
-		@Override
-		public Location getLocation() {
-			return this.loc;
-		}
-	}
-	
 	/*
 	 * This is the Game map, which is basically a GUI that shows the Players actions in real time.
 	 * The GUI will be done with help of the GameGrid Library provided by Stšfe (and other dudes from PHBern).
@@ -105,12 +73,21 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 
 	public void prepareFor(Player activePlayer) {
 		setActivePlayer(activePlayer);
-		bg.clear();
-		for (Location loc : activePlayer.getColoredLocs()) {
-			bg.fillCell(loc, activePlayer.getColor(), false);
-			coloredLocs.add(loc);
+		clearMap();
+		for (MapObject mapObj : activePlayer.getMapObjects()) {
+			mapObj.show();
 		}
 		refresh();
+	}
+
+	private void clearMap() {
+		bg.clear();
+		for (Actor a : getActors()) {
+			a.hide();
+		}
+		for (Actor c : getActors(City.class)) {
+			c.show();
+		}
 	}
 
 	public void storeColoredLocsOf(Player activePlayer) {
@@ -129,5 +106,20 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 
 	public ArrayList<City> getCities() {
 		return this.cities;
+	}
+
+	public void build(MapObject mapObj) {
+		ArrayList<Location> buildLocs = activePlayer.getColoredLocs();
+		if (activePlayer.canPay(buildLocs.size() * mapObj.getPrice())) {
+			for (Location loc : buildLocs) {
+				MapObject newObject = mapObj.copy();
+				this.addActor(newObject, loc);
+				activePlayer.addMapObject(newObject);
+			}
+			System.out.println("you just created " + buildLocs.size() + " new " + mapObj.toString());
+			refresh();
+		} else {
+			Output.println("not enough Money!");
+		}
 	}
 }

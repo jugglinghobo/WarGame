@@ -13,6 +13,7 @@ public class Player {
 	private ArrayList<Location> coloredLocs = new ArrayList<Location>();
 	private ArrayList<City> cities = new ArrayList<City>();
 	private ArrayList<Warrior> warriors = new ArrayList<Warrior>();
+	private ArrayList<MapObject> mapObjects = new ArrayList<MapObject>();
 
 	public Player(String name) {
 		this.setName(name);
@@ -91,28 +92,19 @@ public class Player {
 			i++;
 		}
 		
-	}
-
-	public void build(MapObject mapObj) {
-		ArrayList<MapObject> objects = new ArrayList<MapObject>();
-		for (Location loc : coloredLocs) {
-			mapObj.setLocation(loc);
-			objects.add(mapObj);
-			if (this.canPay(mapObj.getPrice() * objects.size())) {
-				
-			}
-		}
-	}
-
-	
+	}	
 
 	public ArrayList<City> getCities() {
 		return this.cities;
 	}
 
-	public void create(Warrior warrior) {
-		if (this.canPay(warrior.getPrice())) {
-			this.warriors.add(warrior);
+	public void create(Warrior warrior, int number) {
+		if (this.canPay(number * warrior.getPrice())) {
+			for (int i = 0; i < number; i++) {
+				Warrior newWarrior = warrior.copy();
+				this.warriors.add(newWarrior);
+			}
+			Output.println("you just created: " + number + " " + warrior.toString());
 		}
 	}
 
@@ -124,6 +116,14 @@ public class Player {
 			chosen = Input.nextInt()-1;
 		}
 		return cities.get(chosen);
+	}
+
+	public void addMapObject(MapObject mapObj) {
+		this.mapObjects.add(mapObj);
+	}
+
+	public ArrayList<MapObject> getMapObjects() {
+		return this.mapObjects;
 	}
 
 }

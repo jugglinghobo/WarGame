@@ -2,18 +2,16 @@ package warGame;
 
 public abstract class Warrior {
 	
-	public Warrior() {
-		this.price = getPrice();
-		this.HP = getHP();
-		this.AP = getAP();
-		this.movement = getMovement();
-	}
 	protected Player player;
 	protected String type;
 	protected int price;
 	protected int HP;
 	protected int AP;
 	protected int movement;
+	
+	public Warrior(Player player) {
+		this.player = player;
+	}
 	
 	public abstract int getPrice();
 	
@@ -25,9 +23,12 @@ public abstract class Warrior {
 	
 	public abstract String getType();
 	
-	public void setPlayer(Player p) {
-		this.player = p;
+	public Player getPlayer() {
+		return this.player;
 	}
+	public abstract Warrior copy(); 
 	
-	public abstract String toString();
+	public String toString() {
+		return getType();
+	}
 }

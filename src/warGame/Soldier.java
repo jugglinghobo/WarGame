@@ -2,8 +2,14 @@ package warGame;
 
 public class Soldier extends Warrior {
 	
-	public Soldier() {
-		super();
+	private int price = 5;
+	private int HP = 1;
+	private int AP = 1;
+	private int movement = 4;
+	private String type = "SOLDIER";
+	
+	public Soldier(Player player) {
+		super(player);
 	}
 
 	@Override
@@ -32,8 +38,7 @@ public class Soldier extends Warrior {
 	}
 
 	@Override
-	public String toString() {
-		
-		return this.player + this.getType();
+	public Warrior copy() {
+		return new Soldier(player);
 	}
 }

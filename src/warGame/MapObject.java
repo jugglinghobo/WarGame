@@ -9,37 +9,15 @@ import ch.aplu.jgamegrid.*;
 public abstract class MapObject extends Actor{
 	
 	Player player;
-	String name;
 	Location location;
 	int price;
 	
-	public MapObject() {
-		super();
-		this.name = setName();
-		this.location = location;
+	public MapObject(String imgPath) {
+		super(imgPath);
 		setCollisionImage();
+		show();
 	}
 	
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getName() {
-		return name;
-	}
-	
-	public String toString() {
-		return this.name;
-	}
-
-	public void setLocation(Location location) {
-		this.location = location;
-	}
-
-	public Location getLocation() {
-		return location;
-	}
-
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
@@ -48,14 +26,17 @@ public abstract class MapObject extends Actor{
 		return player;
 	}
 	
-	public Class<? extends MapObject> type() {
-		return this.getClass();
+	public void setLocation(Location loc) {
+		this.location = loc;
 	}
-
+	
+	public abstract Location getLocation();
+	
 	public abstract int offerActions();
+	
+	public abstract MapObject copy();
 
 	public int getPrice() {
-		// TODO Auto-generated method stub
-		return 0;
+		return this.price;
 	}
 }
