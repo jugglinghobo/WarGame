@@ -1,5 +1,7 @@
 package warGame;
 
+import warGame.City.Building;
+
 public class Soldier extends Warrior {
 	
 	private int price = 5;
@@ -40,5 +42,10 @@ public class Soldier extends Warrior {
 	@Override
 	public Warrior copy() {
 		return new Soldier(player);
+	}
+
+	@Override
+	public Building requiredBuilding() {
+		return Building.CASERN;
 	}
 }

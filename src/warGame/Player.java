@@ -8,7 +8,7 @@ import ch.aplu.jgamegrid.Location;
 public class Player {
 		
 	private String name;
-	private int money = 3000;
+	private int money = 30;
 	private Color color;
 	private ArrayList<Location> coloredLocs = new ArrayList<Location>();
 	private ArrayList<City> cities = new ArrayList<City>();
@@ -62,25 +62,6 @@ public class Player {
 		return this.coloredLocs;
 	}
 
-	public void offerMapActions() {
-		Output.println(this + ", would you like to build something on those Squares?");
-		Output.println("please enter the number:\n0. do nothing\n1.build defense wall\n2.build crap");
-		int input = Input.nextInt();
-		switch (input) {
-		case 1: {
-			Output.println("you do nothing");
-		} break;
-		case 2: {
-			Output.println("you built a defense wall");
-			offerMapActions();
-		}  break;
-		case 3: {
-			Output.println("you did something else");
-			offerMapActions();
-		} break;
-		}
-	}
-
 	public void addCity(City chosenCity) {
 		this.cities.add(chosenCity);
 	}
@@ -91,21 +72,10 @@ public class Player {
 			Output.println(i + ": " + c.toString());
 			i++;
 		}
-		
 	}	
 
 	public ArrayList<City> getCities() {
 		return this.cities;
-	}
-
-	public void create(Warrior warrior, int number) {
-		if (this.canPay(number * warrior.getPrice())) {
-			for (int i = 0; i < number; i++) {
-				Warrior newWarrior = warrior.copy();
-				this.warriors.add(newWarrior);
-			}
-			Output.println("you just created: " + number + " " + warrior.toString());
-		}
 	}
 
 	public City chooseCity(ArrayList<City> cities) {
@@ -124,6 +94,20 @@ public class Player {
 
 	public ArrayList<MapObject> getMapObjects() {
 		return this.mapObjects;
+	}
+
+	public void addWarrior(Warrior warrior) {
+		this.warriors.add(warrior);
+	}
+
+	public String listStats() {
+		StringBuffer sb = new StringBuffer();
+		sb.append(this.name.toUpperCase() + "\n");
+		for (City c : this.cities) {
+			sb.append(c.toString() + ": \n");
+			sb.append(c.listStats() + "\n");
+		}
+		return sb.toString();
 	}
 
 }

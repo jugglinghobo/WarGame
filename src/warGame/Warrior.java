@@ -1,5 +1,7 @@
 package warGame;
 
+import warGame.City.Building;
+
 public abstract class Warrior {
 	
 	protected Player player;
@@ -23,10 +25,13 @@ public abstract class Warrior {
 	
 	public abstract String getType();
 	
+	public abstract Warrior copy(); 
+	
+	public abstract Building requiredBuilding();
+	
 	public Player getPlayer() {
 		return this.player;
 	}
-	public abstract Warrior copy(); 
 	
 	public String toString() {
 		return getType();

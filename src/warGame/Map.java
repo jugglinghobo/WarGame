@@ -118,8 +118,6 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 			}
 			System.out.println("you just created " + buildLocs.size() + " new " + mapObj.toString());
 			refresh();
-		} else {
-			Output.println("not enough Money!");
 		}
 	}
 }

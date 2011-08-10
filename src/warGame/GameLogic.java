@@ -59,17 +59,17 @@ public class GameLogic {
 						 // Soldiers
 						case 3: {
 							int number = askForNumber();
-							activePlayer.create(new Soldier(activePlayer), number);
+							chosenCity.create(new Soldier(activePlayer), number);
 							} break;
 						 // Knights
 						case 4: {
 							int number = askForNumber();
-							activePlayer.create(new Knight(activePlayer), number);
+							chosenCity.create(new Knight(activePlayer), number);
 							} break;
 						default: MenuChooseAction = true;
 						}
 					}
-					MenuchooseCity = !askIfDone("would you like to manage another City?");
+					MenuchooseCity = !askQuestion("would you like to manage another City?");
 				}
 				} break;
 			// manage map squares
@@ -81,7 +81,7 @@ public class GameLogic {
 					map.activateMouseListener();
 					map.prepareFor(activePlayer);
 					while (!marked) {
-						marked = askIfDone("have you marked all the Squares you want?");
+						marked = askQuestion("have you marked all the Squares you want?");
 					}
 					map.storeColoredLocsOf(activePlayer);
 					map.deactivateMouseListener();
@@ -103,8 +103,11 @@ public class GameLogic {
 					}
 				}
 				} break;
+			case 3: {
+				Output.println(activePlayer.listStats());
+			} break;
 			default: {
-				done = askIfDone("do you really want to end your turn?");
+				done = askQuestion("do you really want to end your turn?\n");
 				map.hide();
 				}
 			}
@@ -112,20 +115,20 @@ public class GameLogic {
 	}
 
 	private int askForNumber() {
-		Output.println("How many of them would you like to have?");
+		Output.println("How many of them would you like to have?\n");
 		return Input.nextInt();
 	}
 
 	private int offerMarkedSquaresActions() {
 		Output.println("What would you like to do with those Squares?");
-		Output.println("0: do nothing, back to main menu\n1: build a defense Wall\n2: build farming land");
+		Output.println("0: do nothing, back to main menu\n1: build a defense Wall\n2: build farming land\n");
 		int action = Input.nextInt();
 		return action;
 	}
 
 	private int offerActions() {
 		Output.println("what would you like to do? please enter a number:");
-		Output.println("0: end turn\n1: manage my cities\n2: build something on the Map");
+		Output.println("0: end turn\n1: manage my cities\n2: build something on the Map\n3: list your stats\n");
 		int action = Input.nextInt();
 		return action;
 	}
@@ -183,7 +186,7 @@ public class GameLogic {
 			String name = Input.nextString();
 			this.players.add(new Player(name));
 			if (players.size() > 1) {
-				done = askIfDone("is that all?");
+				done = askQuestion("is that all?");
 			}
 		}
 		for (Player p : players) {
@@ -201,8 +204,8 @@ public class GameLogic {
 		this.map = new Map();
 	}
 
-	private boolean askIfDone(String s) {
-		Output.println(s);
+	private boolean askQuestion(String question) {
+		Output.println(question);
 		String answer = Input.nextString();
 		if (answer.contains("y")) {
 			return true;
