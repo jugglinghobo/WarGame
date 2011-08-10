@@ -48,4 +48,10 @@ public class Knight extends Warrior {
 	public Building requiredBuilding() {
 		return Building.FORGE;
 	}
+
+	@Override
+	public String getInfo() {
+		String info = "Knight";
+		return info;
+	}
 }

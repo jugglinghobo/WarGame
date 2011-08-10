@@ -29,6 +29,8 @@ public abstract class Warrior {
 	
 	public abstract Building requiredBuilding();
 	
+	public abstract String getInfo();
+	
 	public Player getPlayer() {
 		return this.player;
 	}

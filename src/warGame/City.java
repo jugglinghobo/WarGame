@@ -47,7 +47,7 @@ public class City extends MapObject{
 					this.warriors.add(newWarrior);
 					player.addWarrior(newWarrior);
 				}
-				Output.println("you just created: " + number + " " + warrior.toString());
+				Output.println("you just created: " + number + " " + warrior.toString() + "S");
 			}
 		} else {
 			Output.println("you need to build a " + warrior.requiredBuilding() + " first!");
@@ -105,5 +105,11 @@ public class City extends MapObject{
 		sb.append("SOLDIERS: " + soldierCounter + "\n");
 		sb.append("KNIGHTS: " + knightCounter + "\n");
 		return sb.toString();
+	}
+
+	@Override
+	public String getInfo() {
+		String info = "City";
+		return info;
 	}
 }

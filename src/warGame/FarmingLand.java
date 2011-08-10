@@ -7,6 +7,7 @@ public class FarmingLand extends MapObject {
 
 	public FarmingLand() {
 		super("sprites/farmingLand.bmp");
+		this.price = 4;
 	}
 
 	@Override
@@ -30,6 +31,12 @@ public class FarmingLand extends MapObject {
 	
 	public String toString() {
 		return "Farming Land";
+	}
+
+	@Override
+	public String getInfo() {
+		String info = "";
+		return info;
 	}
 
 }

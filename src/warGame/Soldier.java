@@ -48,4 +48,10 @@ public class Soldier extends Warrior {
 	public Building requiredBuilding() {
 		return Building.CASERN;
 	}
+
+	@Override
+	public String getInfo() {
+		String info = "Soldier";
+		return info;
+	}
 }

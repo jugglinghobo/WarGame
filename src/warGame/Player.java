@@ -37,12 +37,16 @@ public class Player {
 	}
 
 	public boolean canPay(int price) {
-		if (money - price > 0) {
-			money -= price;
-			return true;
+		if (askQuestion("this will const you " + price + " money\ndo you want to buy that?")) {
+			if (money - price >= 0) {
+				money -= price;
+				return true;
+			}
+			Output.println("You have not enough Money");
+			return false;
+		} else {
+			return false;
 		}
-		Output.println("You have not enough Money");
-		return false;
 		
 	}
 	
@@ -102,12 +106,21 @@ public class Player {
 
 	public String listStats() {
 		StringBuffer sb = new StringBuffer();
-		sb.append(this.name.toUpperCase() + "\n");
+		sb.append(this.name.toUpperCase() + ": Money: " + this.money + "\n");
 		for (City c : this.cities) {
 			sb.append(c.toString() + ": \n");
 			sb.append(c.listStats() + "\n");
 		}
 		return sb.toString();
+	}
+	
+	private boolean askQuestion(String question) {
+		Output.println(question);
+		String answer = Input.nextString();
+		if (answer.contains("y")) {
+			return true;
+		}
+		return false;
 	}
 
 }

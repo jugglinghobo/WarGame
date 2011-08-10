@@ -58,12 +58,12 @@ public class GameLogic {
 							} break;
 						 // Soldiers
 						case 3: {
-							int number = askForNumber();
+							int number = askForNumber("how many new Soldiers would you like to have?");
 							chosenCity.create(new Soldier(activePlayer), number);
 							} break;
 						 // Knights
 						case 4: {
-							int number = askForNumber();
+							int number = askForNumber("how many new Knights would you like to have?");
 							chosenCity.create(new Knight(activePlayer), number);
 							} break;
 						default: MenuChooseAction = true;
@@ -101,21 +101,34 @@ public class GameLogic {
 						markedAll = true;
 					}
 					}
+					map.hide();
 				}
 				} break;
 			case 3: {
 				Output.println(activePlayer.listStats());
 			} break;
+			case 4: {
+				int info = listInfo();
+				switch(info) {
+				
+				}
+			} break;
 			default: {
 				done = askQuestion("do you really want to end your turn?\n");
-				map.hide();
 				}
 			}
 		}
 	}
 
-	private int askForNumber() {
-		Output.println("How many of them would you like to have?\n");
+	private int listInfo() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("1: Cities\n2: Soldiers\n3: Knights\n4: Caserns\n5: Forges");
+		int input = askForNumber("what would you like to know:\n" + sb.toString());
+		return input;
+	}
+
+	private int askForNumber(String question) {
+		Output.println(question);
 		return Input.nextInt();
 	}
 
@@ -128,7 +141,7 @@ public class GameLogic {
 
 	private int offerActions() {
 		Output.println("what would you like to do? please enter a number:");
-		Output.println("0: end turn\n1: manage my cities\n2: build something on the Map\n3: list your stats\n");
+		Output.println("0: end turn\n1: manage my cities\n2: build something on the Map\n3: list your stats\n4: get some informations");
 		int action = Input.nextInt();
 		return action;
 	}

@@ -35,6 +35,8 @@ public abstract class MapObject extends Actor{
 	public abstract int offerActions();
 	
 	public abstract MapObject copy();
+	
+	public abstract String getInfo();
 
 	public int getPrice() {
 		return this.price;
