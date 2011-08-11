@@ -11,6 +11,7 @@ public class GameLogic {
 	
 	private ArrayList<Player> players = new ArrayList<Player>();
 	private Map map;
+	private GUI gui;
 	
 	
 	public GameLogic() {
@@ -169,6 +170,12 @@ public class GameLogic {
 		initPlayers();
 		initMap();
 		distributeCities();
+		initGUI();
+	}
+
+	private void initGUI() {
+		this.gui = new GUI(map);
+		
 	}
 
 	private void distributeCities() {
