@@ -33,14 +33,14 @@ class StdOutput extends Output {
 	}
 }
 
-//class GuiOutput extends Output {
-//	private GUI gui;
-//
-//	GuiOutput(GUI gui) {
-//		this.gui = gui;
-//	}
-//
-//	public void output(String s) {
-//		gui.sendOutput(s + "\n");
-//	}
-//}
+class GuiOutput extends Output {
+	private GUI gui;
+
+	GuiOutput(GUI gui) {
+		this.gui = gui;
+	}
+
+	public void output(String s) {
+		gui.sendOutput(s + "\n");
+	}
+}

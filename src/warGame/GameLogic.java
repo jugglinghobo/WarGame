@@ -6,7 +6,7 @@ import java.util.Random;
 
 import warGame.City.Building;
 
-public class GameLogic {
+public class GameLogic{
 	
 	
 	private ArrayList<Player> players = new ArrayList<Player>();
@@ -75,7 +75,6 @@ public class GameLogic {
 				} break;
 			// manage map squares
 			case 2: {
-				map.show();
 				boolean markedAll = false;
 				while (!markedAll) {
 					boolean marked = false;
@@ -102,7 +101,6 @@ public class GameLogic {
 						markedAll = true;
 					}
 					}
-					map.hide();
 				}
 				} break;
 			case 3: {
@@ -167,14 +165,16 @@ public class GameLogic {
 	}
 
 	private void init() {
-		initPlayers();
 		initMap();
-		distributeCities();
 		initGUI();
+		initPlayers();
+		distributeCities();
 	}
 
 	private void initGUI() {
 		this.gui = new GUI(map);
+		Output.setOutput(new GuiOutput(gui));
+		Input.setInput(new GuiInput(gui));
 		
 	}
 
@@ -227,6 +227,7 @@ public class GameLogic {
 	private boolean askQuestion(String question) {
 		Output.println(question);
 		String answer = Input.nextString();
+		Output.println(answer);
 		if (answer.contains("y")) {
 			return true;
 		}

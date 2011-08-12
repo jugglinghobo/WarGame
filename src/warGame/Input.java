@@ -26,7 +26,7 @@ public abstract class Input {
 
 class StdInput extends Input {
 
-	Scanner scan = new Scanner(System.in);
+	private Scanner scan = new Scanner(System.in);
 	
 	public String getString() {
 		return scan.nextLine();
@@ -44,5 +44,47 @@ class StdInput extends Input {
 		unused = scan.nextLine();
 		return realInt;
 	}
-	
+}
+
+class GuiInput extends Input{
+	private GUI gui;
+
+	GuiInput(GUI gui) {
+		this.gui = gui;
+	}
+
+	@Override
+	public String getString() {
+		String gotIt = "";
+		String in = gui.getInput();
+		while (in.equals("")) {
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			in = gui.getInput();
+			if (!in.equals("")) {
+				gotIt = in;
+			}
+		}
+		return gotIt;
+	}
+
+	public int getInt() {
+		int gotIt = 0;
+		String in = gui.getInput();
+		while (in.equals("")) {
+			try {
+				Thread.sleep(250);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			in = gui.getInput();
+			if (!in.equals("") && Integer.parseInt(in) < 10) {
+				gotIt = Integer.parseInt(in);
+			}
+		}
+		return gotIt;
+	}
 }

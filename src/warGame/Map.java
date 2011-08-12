@@ -19,7 +19,7 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 	private GGBackground bg;	
 
 	public Map() {
-		super(80, 50, 15, Color.LIGHT_GRAY, "sprites/map.jpg", false, true);
+		super(39, 60, 15, Color.LIGHT_GRAY, "sprites/map2_2.jpg", false, true);
 		this.bg = getBg();
 		initializeCities();
 	}
