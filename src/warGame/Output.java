@@ -41,6 +41,6 @@ class GuiOutput extends Output {
 	}
 
 	public void output(String s) {
-		gui.sendOutput(s + "\n");
+		gui.sendOutput("\n" + s + "\n");
 	}
 }

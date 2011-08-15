@@ -6,7 +6,7 @@ import ch.aplu.jgamegrid.Location;
 public class FarmingLand extends MapObject {
 
 	public FarmingLand() {
-		super("sprites/farmingLand.bmp");
+		super("sprites/farmingLand.png");
 		this.price = 4;
 	}
 
@@ -35,7 +35,7 @@ public class FarmingLand extends MapObject {
 
 	@Override
 	public String getInfo() {
-		String info = "";
+		String info = "Farming Land provides you with Food every round.";
 		return info;
 	}
 

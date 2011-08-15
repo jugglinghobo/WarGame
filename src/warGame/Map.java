@@ -3,7 +3,6 @@ package warGame;
 import java.awt.Color;
 import java.awt.Point;
 import java.util.ArrayList;
-
 import ch.aplu.jgamegrid.*;
 
 public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListener{
@@ -65,7 +64,7 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 			case (GGMouse.lClick): {
 				if (actor != null) {
 					MapObject clicked = (MapObject) actor;
-					clicked.offerActions();
+					Output.println(clicked.toString());
 				}
 			}
 		}
@@ -116,8 +115,32 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 				this.addActor(newObject, loc);
 				activePlayer.addMapObject(newObject);
 			}
-			System.out.println("you just created " + buildLocs.size() + " new " + mapObj.toString());
+			Output.println("you just created " + buildLocs.size() + " new " + mapObj.toString());
 			refresh();
+		}
+	}
+
+	public void buildTradingRoute() {
+		build(new TradingRoute());
+		checkTradingConnection(activePlayer.getColoredLocs());
+		
+	}
+
+	private void checkTradingConnection(ArrayList<Location> buildLocs) {
+		ArrayList<Location> tradingRoutes = new ArrayList<Location>(activePlayer.getTradingRoutes());
+		for (Location tradingLoc : tradingRoutes) {
+			for (Location buildLoc : buildLocs) {
+				if (buildLoc.getNeighbourLocations(1).contains(tradingLoc)) {
+					if (!tradingRoutes.contains(buildLoc)) {
+						activePlayer.addTradingRoute(buildLoc);
+					}
+				}
+				for (City c : activePlayer.getCities()) {
+					if (buildLoc.getNeighbourLocations(1).contains(c.getLocation())) {
+						activePlayer.addConnectedCity(c);
+					}
+				}
+			}
 		}
 	}
 }

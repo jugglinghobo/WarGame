@@ -31,8 +31,7 @@ public class DefenseWall extends MapObject {
 
 	@Override
 	public String getInfo() {
-		String info = "Defense Walls are useful to stop enemies on their March against your Cities." +
-				"";
+		String info = "Defense Walls are useful to stop enemies on their March against your Cities.";
 		return info;
 	}
 

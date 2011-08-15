@@ -51,7 +51,9 @@ public class Knight extends Warrior {
 
 	@Override
 	public String getInfo() {
-		String info = "Knight";
+		String info = "Knight:\nPrice: 12/3\nHP: 2\nAP: 3\nMov: 10\nKnights are strong Warriors" +
+				" capable of bringing sheer terror into enemy lines. They can move long distances and are hard to kill, " +
+				"and even few Knights can turn a battle into slaughter!";
 		return info;
 	}
 }

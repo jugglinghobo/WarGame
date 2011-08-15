@@ -8,12 +8,14 @@ import ch.aplu.jgamegrid.Location;
 public class Player {
 		
 	private String name;
-	private int money = 30;
+	private int money = 300000;
 	private Color color;
 	private ArrayList<Location> coloredLocs = new ArrayList<Location>();
 	private ArrayList<City> cities = new ArrayList<City>();
 	private ArrayList<Warrior> warriors = new ArrayList<Warrior>();
 	private ArrayList<MapObject> mapObjects = new ArrayList<MapObject>();
+	private ArrayList<City> connectedCities = new ArrayList<City>();
+	private ArrayList<Location> tradingRoutes = new ArrayList<Location>();
 
 	public Player(String name) {
 		this.setName(name);
@@ -24,7 +26,7 @@ public class Player {
 	}
 
 	public void setName(String name) {
-		this.name = name;
+		this.name = name.toUpperCase();
 	}
 
 	public String getName() {
@@ -68,6 +70,7 @@ public class Player {
 
 	public void addCity(City chosenCity) {
 		this.cities.add(chosenCity);
+		this.tradingRoutes.add(chosenCity.getLocation());
 	}
 
 	public void listCities(ArrayList<City> cities) {
@@ -123,4 +126,20 @@ public class Player {
 		return false;
 	}
 
+
+	public ArrayList<Location> getTradingRoutes() {
+		return this.tradingRoutes;
+	}
+
+	public void addTradingRoute(Location buildLoc) {
+		this.tradingRoutes.add(buildLoc);
+		
+	}
+
+	public void addConnectedCity(City c) {
+		if (!this.connectedCities.contains(c)) {
+			this.connectedCities.add(c);
+			Output.println("Congrats, you added " + c.toString() + " to your trading network");
+		}
+	}
 }

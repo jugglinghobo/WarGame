@@ -1,12 +1,8 @@
 package warGame;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.Scanner;
-
 import javax.swing.*;
 
 public class GUI implements KeyListener{
@@ -42,6 +38,8 @@ public class GUI implements KeyListener{
 		interactionPanel.setLayout(new GridLayout(2, 0, 5, 5));
 		this.outputArea = new JTextArea();
 		outputArea.setEditable(false);
+		outputArea.setLineWrap(true);
+		outputArea.setWrapStyleWord(true);
 		JScrollPane scrollOutput = new JScrollPane(outputArea);
 		inputField = new JTextField(4);
 		inputField.addKeyListener(this);
@@ -58,7 +56,7 @@ public class GUI implements KeyListener{
 
 	public void sendOutput(String string) {
 		outputArea.append(string);
-		outputArea.setCaretPosition(outputArea.getCaretPosition() + string.length());
+		outputArea.setCaretPosition(outputArea.getDocument().getLength());
 	}
 
 	public String getInput() {

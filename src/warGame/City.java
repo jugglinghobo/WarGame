@@ -7,16 +7,22 @@ import ch.aplu.jgamegrid.*;
 public class City extends MapObject{
 	
 	public enum Building{
-		CASERN(10), FORGE(15);
+		CASERN(10, "Caserns are used for creating and training Soldiers"), FORGE(15, "Forges are used for creating nd training Knights");
 
 		private int price;
+		private String info;
 		
-		private Building(int price) {
+		private Building(int price, String info) {
 			this.price = price;
+			this.info = info;
 		}
 		
 		public int getPrice() {
 		return price;
+		}
+
+		public String getInfo() {
+			return this.info;
 		}
 	}
 	
@@ -25,8 +31,9 @@ public class City extends MapObject{
 	private ArrayList<Warrior> warriors = new ArrayList<Warrior>();
 
 	public City(String name, Location location) {
-		super("sprites/tower.png");
+		super("sprites/city.png");
 		this.name = name;
+		this.HP = 5;	// Cities are harder to destroy/overtake
 		setLocation(location);
 	}
 
@@ -52,30 +59,6 @@ public class City extends MapObject{
 		} else {
 			Output.println("you need to build a " + warrior.requiredBuilding() + " first!");
 		}
-	}
-
-	@Override
-	public int offerActions() {
-		Output.println("what would you like to do in " + this.name + "?");
-		Output.println("0: back one menu\n1: Build a Casern\n2: Build a Forge\n3: create some Soldiers\n4: create some Knights");
-		int action = Input.nextInt();
-		return action;
-	}
-	
-	public String toString() {
-		return this.name;
-	}
-
-	
-	// should never be called!
-	@Override
-	public MapObject copy() {
-		return null;
-	}
-
-	@Override
-	public Location getLocation() {
-		return this.location;
 	}
 
 	public String listStats() {
@@ -106,10 +89,36 @@ public class City extends MapObject{
 		sb.append("KNIGHTS: " + knightCounter + "\n");
 		return sb.toString();
 	}
+	
+	@Override
+	public int offerActions() {
+		Output.println("what would you like to do in " + this.name + "?");
+		Output.println("0: back one menu\n1: Build a Casern\n2: Build a Forge\n3: create some Soldiers\n" +
+				"4: create some Knights\n5: build a Trading Route");
+		int action = Input.nextInt();
+		return action;
+	}
+	
+	// should never be called!
+	@Override
+	public MapObject copy() {
+		return null;
+	}
+
+	@Override
+	public Location getLocation() {
+		return this.location;
+	}
+	
+	public String toString() {
+		return this.name.toUpperCase();
+	}
 
 	@Override
 	public String getInfo() {
-		String info = "City";
+		String info = "Cities are the base of your empire. Every City is able to store your Money and Food " +
+				"as well as build and train new Warriors. You can connect Cities with trading routes, so they are able to share " +
+				"Money and Food stored there. You can also store as many warriors as you like in a city without them needing Food ";
 		return info;
 	}
 }

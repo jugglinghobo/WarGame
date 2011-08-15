@@ -67,7 +67,9 @@ public class GameLogic{
 							int number = askForNumber("how many new Knights would you like to have?");
 							chosenCity.create(new Knight(activePlayer), number);
 							} break;
-						default: MenuChooseAction = true;
+						default: {
+							MenuChooseAction = true;
+						}
 						}
 					}
 					MenuchooseCity = !askQuestion("would you like to manage another City?");
@@ -97,19 +99,46 @@ public class GameLogic{
 						map.build(new FarmingLand());
 						marked = true;
 						} break;
+					// trading route
+					case 3: {
+						map.buildTradingRoute();
+					}
 					default: {
 						markedAll = true;
 					}
 					}
 				}
-				} break;
+				}break;
 			case 3: {
 				Output.println(activePlayer.listStats());
-			} break;
+				} break;
 			case 4: {
+				boolean gotInfo = false;
+				while (!gotInfo) {
 				int info = listInfo();
-				switch(info) {
-				
+					switch(info) {
+					// City info
+					case 1: {
+						Output.println(new City(null, null).getInfo());
+						} break;
+					// Soldiers info
+					case 2: {
+						Output.println(new Soldier(null).getInfo());
+						} break;
+					case 3: {
+						Output.println(new Knight(null).getInfo());
+						} break;
+					case 4: {
+						Output.println(Building.CASERN.getInfo());
+						} break;
+					case 5: {
+						Output.println(Building.FORGE.getInfo());
+					}
+						
+					default: {
+						gotInfo = true;
+					}
+					}
 				}
 			} break;
 			default: {
@@ -121,7 +150,7 @@ public class GameLogic{
 
 	private int listInfo() {
 		StringBuffer sb = new StringBuffer();
-		sb.append("1: Cities\n2: Soldiers\n3: Knights\n4: Caserns\n5: Forges");
+		sb.append("1: Cities\n2: Soldiers\n3: Knights\n4: Caserns\n5: Forges\n0: i have no more questions");
 		int input = askForNumber("what would you like to know:\n" + sb.toString());
 		return input;
 	}
@@ -133,14 +162,14 @@ public class GameLogic{
 
 	private int offerMarkedSquaresActions() {
 		Output.println("What would you like to do with those Squares?");
-		Output.println("0: do nothing, back to main menu\n1: build a defense Wall\n2: build farming land\n");
+		Output.println("0: do nothing, back to main menu\n1: build a Defense Wall\n2: build Farming Land\n3: build Trading Route");
 		int action = Input.nextInt();
 		return action;
 	}
 
 	private int offerActions() {
 		Output.println("what would you like to do? please enter a number:");
-		Output.println("0: end turn\n1: manage my cities\n2: build something on the Map\n3: list your stats\n4: get some informations");
+		Output.println("0: end turn\n1: manage my cities\n2: build something on the Map\n3: list your Stats\n4: get some Informations");
 		int action = Input.nextInt();
 		return action;
 	}
@@ -175,7 +204,6 @@ public class GameLogic{
 		this.gui = new GUI(map);
 		Output.setOutput(new GuiOutput(gui));
 		Input.setInput(new GuiInput(gui));
-		
 	}
 
 	private void distributeCities() {
@@ -200,11 +228,12 @@ public class GameLogic{
 
 	private void initPlayers() {
 		boolean done = false;
-		Output.println("Welcome, please register the Players");
+		Output.println("Welcome to Wargame!\nplease register the Players");
 		while (!done) {
 			Output.println("Add a Player:");
 			String name = Input.nextString();
 			this.players.add(new Player(name));
+			Output.println("Player " + name.toUpperCase() + " added");
 			if (players.size() > 1) {
 				done = askQuestion("is that all?");
 			}

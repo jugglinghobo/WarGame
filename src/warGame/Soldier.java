@@ -51,7 +51,9 @@ public class Soldier extends Warrior {
 
 	@Override
 	public String getInfo() {
-		String info = "Soldier";
+		String info = "Soldier:\nPrice: 5/3\nHP: 1\nAP: 1\nMov: 4\nSoldiers are infantry troops. " +
+				"A single Soldier might not be very strong, but Soldiers gain their strength from their mass. " +
+				"Never underestimate the chaos and destruction a batallion of Soldiers is capable of!";
 		return info;
 	}
 }

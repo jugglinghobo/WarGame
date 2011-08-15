@@ -81,8 +81,13 @@ class GuiInput extends Input{
 				e.printStackTrace();
 			}
 			in = gui.getInput();
-			if (!in.equals("") && Integer.parseInt(in) < 10) {
-				gotIt = Integer.parseInt(in);
+			if (!in.equals("")) {
+				try {
+					gotIt = Integer.parseInt(in);
+				} catch (NumberFormatException e) {
+					Output.println("Please enter a number");
+					gotIt = getInt();
+					}
 			}
 		}
 		return gotIt;
