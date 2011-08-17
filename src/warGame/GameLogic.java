@@ -4,25 +4,28 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Random;
 
+import javax.swing.*;
+
 import warGame.City.Building;
 
 public class GameLogic{
 	
+	public static void main(String[] args) {
+		new GUI(new GameLogic());
+	}
+	
 	
 	private ArrayList<Player> players = new ArrayList<Player>();
 	private Map map;
-	private GUI gui;
-	
+	private JTextPane outputPane;	
+	private JPanel inputPanel;
 	
 	public GameLogic() {
-		init();
+		initMap();
 	}
 	
-	public static void main(String[] args) {
-		GameLogic game = new GameLogic();
-		while (!game.isOver()) {
-			game.play();
-		}
+	private void initMap() {
+		this.map = new Map();
 	}
 
 	private void play() {
@@ -47,7 +50,7 @@ public class GameLogic{
 					City chosenCity = activePlayer.chooseCity(activePlayer.getCities());
 					boolean MenuChooseAction = false;
 					while (!MenuChooseAction) {
-						int cityAction = chosenCity.offerActions();
+						int cityAction = 0;//chosenCity.offerActions();
 						switch (cityAction) {
 						// Casern
 						case 1: {
@@ -148,16 +151,16 @@ public class GameLogic{
 		}
 	}
 
-	private int listInfo() {
-		StringBuffer sb = new StringBuffer();
-		sb.append("1: Cities\n2: Soldiers\n3: Knights\n4: Caserns\n5: Forges\n0: i have no more questions");
-		int input = askForNumber("what would you like to know:\n" + sb.toString());
-		return input;
-	}
-
 	private int askForNumber(String question) {
 		Output.println(question);
 		return Input.nextInt();
+	}
+	
+	private int listInfo() {
+		StringBuffer sb = new StringBuffer();
+		sb.append("1: Cities\n2: Soldiers\n3: Knights\n4: Caserns\n5: Forges\n0: I have no more questions");
+		int input = askForNumber("what would you like to know:\n" + sb.toString());
+		return input;
 	}
 
 	private int offerMarkedSquaresActions() {
@@ -193,65 +196,79 @@ public class GameLogic{
 		
 	}
 
-	private void init() {
-		initMap();
-		initGUI();
+	public void init() {
 		initPlayers();
 		distributeCities();
 	}
-
-	private void initGUI() {
-		this.gui = new GUI(map);
-		Output.setOutput(new GuiOutput(gui));
-		Input.setInput(new GuiInput(gui));
+	
+	private void initPlayers() {
+		boolean done = false;
+		ArrayList<String> usedNames = new ArrayList<String>();
+		int i = 1;
+		while (!done) {
+			String name = (String) getInput("Player " + i + " , please enter your name", "sprites/player.png");
+			if (name != null && !usedNames.contains(name)) {
+				usedNames.add(name);
+				i++;
+				this.players.add(new Player(name));
+				Output.println("Player " + name.toUpperCase() + " added");
+				if (players.size() > 1) {
+					done = !getBooleanInput("Would you like to add another Player?", "sprites/player.png");
+				}
+			}
+		}
+		outputPane.setText("");
+		for (Player p : players) {
+			Color color = getRandomColor();
+			p.setColor(color);
+		}
 	}
 
 	private void distributeCities() {
 		ArrayList<City> cities = new ArrayList<City>(map.getCities());
 		while (!cities.isEmpty()) {
 			Player activePlayer = this.players.remove(0);
-			City chosenCity = activePlayer.chooseCity(cities);
+			City chosenCity = chooseInput(cities, activePlayer + " , please choose a City", "sprites/city.png");
+			Output.println(activePlayer + " chose " + chosenCity);
 			cities.remove(chosenCity);
 			activePlayer.addCity(chosenCity);
 			chosenCity.setPlayer(activePlayer);
 			this.players.add(activePlayer);
 		}
+		outputPane.setText("");
 	}
-
-	public void listCities(ArrayList<City> cities) {
-		int i = 1;
-		for (City c : cities) {
-			Output.println(i + ": " + c.toString());
-			i++;
-		}
+	
+	
+	private Object getInput(String string, String iconPath) {
+		Object input = JOptionPane.showInputDialog(null, string, "NEW PLAYER", JOptionPane.QUESTION_MESSAGE, new ImageIcon(iconPath), null, null);
+		return input;
 	}
-
-	private void initPlayers() {
-		boolean done = false;
-		Output.println("Welcome to Wargame!\nplease register the Players");
-		while (!done) {
-			Output.println("Add a Player:");
-			String name = Input.nextString();
-			this.players.add(new Player(name));
-			Output.println("Player " + name.toUpperCase() + " added");
-			if (players.size() > 1) {
-				done = askQuestion("is that all?");
-			}
-		}
-		for (Player p : players) {
-			Color color = getRandomColor();
-			p.setColor(color);
+	
+	public boolean getBooleanInput(String string, String iconPath) {
+		int option = JOptionPane.showConfirmDialog(null, string, null, JOptionPane.YES_NO_OPTION,
+				JOptionPane.PLAIN_MESSAGE, new ImageIcon(iconPath));
+		if (option == JOptionPane.OK_OPTION) {
+			return true;
+		} else {
+			return false;
 		}
 	}
 	
+	private City chooseInput(ArrayList<City> cities, String string, String iconPath) {
+		Object[] cityObjects = cities.toArray();
+		int input = JOptionPane.CLOSED_OPTION;
+		while (input == JOptionPane.CLOSED_OPTION) {
+			input = JOptionPane.showOptionDialog(null, string, null, JOptionPane.OK_OPTION, 
+					JOptionPane.PLAIN_MESSAGE, new ImageIcon(iconPath), cityObjects, null);
+		}
+		return cities.get(input);
+	}
+
 	private Color getRandomColor() {
 		Random gen = new Random();
 		return new Color(gen.nextInt(256), gen.nextInt(256), gen.nextInt(256));
 	}
-
-	private void initMap() {
-		this.map = new Map();
-	}
+	
 
 	private boolean askQuestion(String question) {
 		Output.println(question);
@@ -261,5 +278,14 @@ public class GameLogic{
 			return true;
 		}
 		return false;
+	}
+
+	public Map getMap() {
+		return this.map;
+	}
+
+	public void setInteractionPanel(JTextPane outputPane, JPanel inputPanel) {
+		this.outputPane = outputPane;
+		this.inputPanel = inputPanel;
 	}
 }

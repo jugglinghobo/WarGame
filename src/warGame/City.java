@@ -1,6 +1,9 @@
 package warGame;
 
+import java.awt.GridLayout;
 import java.util.ArrayList;
+
+import javax.swing.*;
 
 import ch.aplu.jgamegrid.*;
 
@@ -27,14 +30,49 @@ public class City extends MapObject{
 	}
 	
 	private String name;
+	private JPanel inputPanel;
+	private JTextPane outputPane;
 	private ArrayList<Building> buildings = new ArrayList<Building>();
 	private ArrayList<Warrior> warriors = new ArrayList<Warrior>();
+	private JPanel interactionPanel;
 
 	public City(String name, Location location) {
 		super("sprites/city.png");
 		this.name = name;
 		this.HP = 5;	// Cities are harder to destroy/overtake
+		initInteractionPanel();
+		
 		setLocation(location);
+	}
+
+
+	private void initInteractionPanel() {
+		this.interactionPanel = new JPanel(new GridLayout(2, 0, 5, 5));
+		initInputPanel();
+		initOutputPane();
+		interactionPanel.add(outputPane);
+		interactionPanel.add(inputPanel);
+	}
+
+
+	private void initInputPanel() {
+		this.inputPanel = new JPanel();
+		initButtons();
+		
+	}
+	
+	private void initButtons() {
+		// TODO Auto-generated method stub
+		
+	}
+
+
+	private void initOutputPane() {
+		this.outputPane = new JTextPane();
+		StringBuffer sb = new StringBuffer();
+		sb.append(this.toString());
+		sb.append(listStats());
+		outputPane.setText(sb.toString());
 	}
 
 	public void build(Building building) {
@@ -92,11 +130,8 @@ public class City extends MapObject{
 	
 	@Override
 	public int offerActions() {
-		Output.println("what would you like to do in " + this.name + "?");
-		Output.println("0: back one menu\n1: Build a Casern\n2: Build a Forge\n3: create some Soldiers\n" +
-				"4: create some Knights\n5: build a Trading Route");
-		int action = Input.nextInt();
-		return action;
+		Output.setInteractionPanel(this.interactionPanel);
+		return 0;
 	}
 	
 	// should never be called!

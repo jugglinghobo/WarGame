@@ -64,7 +64,8 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 			case (GGMouse.lClick): {
 				if (actor != null) {
 					MapObject clicked = (MapObject) actor;
-					Output.println(clicked.toString());
+					clicked.offerActions();
+					Output.println("touched");
 				}
 			}
 		}

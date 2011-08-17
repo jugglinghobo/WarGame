@@ -1,5 +1,7 @@
 package warGame;
 
+import javax.swing.JPanel;
+
 import ch.aplu.jgamegrid.*;
 
 /**

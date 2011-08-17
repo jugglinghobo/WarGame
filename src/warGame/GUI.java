@@ -1,62 +1,97 @@
 package warGame;
 
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.*;
 
-public class GUI implements KeyListener{
+public class GUI {
 	
 	private JFrame frame;
-	private Map map;
-	private JPanel mapPanel;
+	private JPanel inputPanel;
+	private JTextPane outputPane;
 	private JPanel interactionPanel;
-	private JTextArea outputArea;
-	private JTextField inputField;
 	protected String input = "";
+	private JPanel basicActionPanel;
+	private GameLogic gameLogic;
 
-	public GUI(Map map) {
-		this.map = map;
-		this.frame = new JFrame("WarGame");
-		frame.setSize(frame.getMaximumSize());
-		frame.setLayout(new GridLayout(0, 2));
-		frame.setResizable(true);
-		init();
+	public GUI(GameLogic gameLogic) {
+		Output.setOutput(new GuiOutput(this));
+		Input.setInput(new GuiInput(this));
+		this.gameLogic = gameLogic;
+		initFrame();
+		gameLogic.setInteractionPanel(this.outputPane, this.inputPanel);
+		gameLogic.init();
 	}
 
-	private void init() {
-		initMapPanel();
-		initInteractionPanel();
-		frame.add(interactionPanel);
-		frame.add(mapPanel);
+	private void initFrame() {
+		this.frame = new JFrame("WarGame");
+		frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setLayout(new BorderLayout(5, 5)); //GridLayout(0, 2, 5, 5)
+		frame.setResizable(true);
+		initInteractionPanel();
+		initMapPanel();
+//		frame.pack();
 		frame.setVisible(true);
 	}
-
+	
+	private void initMapPanel() {
+		JPanel mapPanel = new JPanel();
+		Map map = gameLogic.getMap();
+		mapPanel.add(map);
+		frame.add(mapPanel, BorderLayout.EAST);
+	}
+	
 	private void initInteractionPanel() {
 		this.interactionPanel = new JPanel();
 		interactionPanel.setLayout(new GridLayout(2, 0, 5, 5));
-		this.outputArea = new JTextArea();
-		outputArea.setEditable(false);
-		outputArea.setLineWrap(true);
-		outputArea.setWrapStyleWord(true);
-		JScrollPane scrollOutput = new JScrollPane(outputArea);
-		inputField = new JTextField(4);
-		inputField.addKeyListener(this);
-		
-		
-		interactionPanel.add(scrollOutput);
-		interactionPanel.add(inputField);
+		initOutputPanel();
+		initInputPanel();
+		frame.add(interactionPanel, BorderLayout.WEST);
 	}
-
-	private void initMapPanel() {
-		mapPanel = new JPanel();
-		mapPanel.add(map);
+	
+	private void initOutputPanel() {
+		this.outputPane = new JTextPane();
+		outputPane.setEditable(false);
+		interactionPanel.add(outputPane);
 	}
+	
+	private void initInputPanel() {
+		this.inputPanel = new JPanel();
+		inputPanel.setLayout(new BorderLayout(5, 5));
+		initBasicActionPanel();
+		inputPanel.add(basicActionPanel);
+		interactionPanel.add(inputPanel, BorderLayout.SOUTH);
+	}
+	
+	
+	private void initBasicActionPanel() {
+		this.basicActionPanel = new JPanel();
+		JButton cityButton = new JButton(new ImageIcon("sprites/city.png"));
+		JButton mapButton = new JButton(new ImageIcon("sprites/mapIcon.png"));
+		JButton playerButton = new JButton(new ImageIcon("sprites/player.png"));
+		JButton questionButton = new JButton(new ImageIcon("sprites/questionMark.png"));
+		JButton endTurn = new JButton("END TURN");
+		
+		endTurn.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		basicActionPanel.add(cityButton);
+		basicActionPanel.add(mapButton);
+		basicActionPanel.add(playerButton);
+		basicActionPanel.add(questionButton);
+		basicActionPanel.add(endTurn);
+	}
+	
 
 	public void sendOutput(String string) {
-		outputArea.append(string);
-		outputArea.setCaretPosition(outputArea.getDocument().getLength());
+		outputPane.setText(string);
 	}
 
 	public String getInput() {
@@ -66,21 +101,15 @@ public class GUI implements KeyListener{
 		
 	}
 
-	@Override
-	public void keyPressed(KeyEvent evt) {
-		int key = evt.getKeyCode();
-		if (key == KeyEvent.VK_ENTER) {
-			this.input = inputField.getText();
-			inputField.setText("");
-		}
+	public int offerBasicActions() {
+		return 0;
 	}
 
-	@Override
-	public void keyReleased(KeyEvent evt) {
+	public void setInteractionPanel(JPanel panel) {
+		frame.remove(interactionPanel);
+		this.interactionPanel = panel;
+		frame.add(interactionPanel, BorderLayout.WEST);
+		frame.validate();
+		frame.repaint();
 	}
-
-	@Override
-	public void keyTyped(KeyEvent evt) {
-	}
-
 }
