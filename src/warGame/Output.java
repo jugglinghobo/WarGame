@@ -15,15 +15,15 @@ abstract class Output {
 		instance = o;
 	}
 	
-	public static void setInteractionPanel(JPanel panel) {
-		instance.updateInteractionPanel(panel);
+	public static void setInputPanel(JPanel panel) {
+		instance.updateInputPanel(panel);
 	}
 
 	private static boolean willPrintout = true;
 
 	public abstract void output(String s);
 	
-	public abstract void updateInteractionPanel(JPanel panel);
+	public abstract void updateInputPanel(JPanel panel);
 
 	public static void mute() {
 		willPrintout = false;
@@ -43,7 +43,7 @@ class StdOutput extends Output {
 	}
 
 	@Override
-	public void updateInteractionPanel(JPanel panel) {
+	public void updateInputPanel(JPanel panel) {
 	}
 }
 
@@ -58,8 +58,8 @@ class GuiOutput extends Output {
 		gui.sendOutput("\n" + s + "\n");
 	}
 	
-	public void updateInteractionPanel(JPanel panel) {
-		gui.setInteractionPanel(panel);
+	public void updateInputPanel(JPanel panel) {
+		gui.setInputPanel(panel);
 	}
 	
 }

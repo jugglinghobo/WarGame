@@ -1,9 +1,6 @@
 package warGame;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 import javax.swing.*;
 
 public class GUI {
@@ -13,80 +10,79 @@ public class GUI {
 	private JTextPane outputPane;
 	private JPanel interactionPanel;
 	protected String input = "";
-	private JPanel basicActionPanel;
 	private GameLogic gameLogic;
+	private JPanel statsPanel;
+	private JPanel mapObjectPanel;
 
 	public GUI(GameLogic gameLogic) {
 		Output.setOutput(new GuiOutput(this));
 		Input.setInput(new GuiInput(this));
 		this.gameLogic = gameLogic;
 		initFrame();
-		gameLogic.setInteractionPanel(this.outputPane, this.inputPanel);
 		gameLogic.init();
+		gameLogic.playNextPlayer();
 	}
 
 	private void initFrame() {
 		this.frame = new JFrame("WarGame");
 		frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setLayout(new BorderLayout(5, 5)); //GridLayout(0, 2, 5, 5)
+		frame.setLayout(new BorderLayout(5, 5));
 		frame.setResizable(true);
-		initInteractionPanel();
+		initStatsPanel();
 		initMapPanel();
-//		frame.pack();
+		initInteractionPanel();
 		frame.setVisible(true);
 	}
 	
+	private void initStatsPanel() {
+		this.statsPanel = gameLogic.getStatsPanel();
+		this.frame.add(statsPanel, BorderLayout.PAGE_START);
+	}
+
 	private void initMapPanel() {
 		JPanel mapPanel = new JPanel();
 		Map map = gameLogic.getMap();
 		mapPanel.add(map);
-		frame.add(mapPanel, BorderLayout.EAST);
+		frame.add(mapPanel, BorderLayout.LINE_END);
 	}
 	
 	private void initInteractionPanel() {
 		this.interactionPanel = new JPanel();
-		interactionPanel.setLayout(new GridLayout(2, 0, 5, 5));
+		interactionPanel.setLayout(new GridLayout(4, 1, 5, 5));
 		initOutputPanel();
-		initInputPanel();
-		frame.add(interactionPanel, BorderLayout.WEST);
+		initMapObjectPanel();
+		initMapActionPanel();
+		frame.add(interactionPanel, BorderLayout.LINE_START);
 	}
 	
 	private void initOutputPanel() {
 		this.outputPane = new JTextPane();
+		outputPane.setPreferredSize(new Dimension(100, 100));
 		outputPane.setEditable(false);
-		interactionPanel.add(outputPane);
+		outputPane.setOpaque(false);
+		interactionPanel.add(outputPane, BorderLayout.LINE_START);
+	}
+	
+	/*
+	 * This is the Panel in which the different MapObjects display their offers
+	 */
+	private void initMapObjectPanel() {
+		this.mapObjectPanel = new JPanel();
+		initInputPanel();
+		interactionPanel.add(mapObjectPanel);
 	}
 	
 	private void initInputPanel() {
 		this.inputPanel = new JPanel();
 		inputPanel.setLayout(new BorderLayout(5, 5));
-		initBasicActionPanel();
-		inputPanel.add(basicActionPanel);
-		interactionPanel.add(inputPanel, BorderLayout.SOUTH);
+		mapObjectPanel.add(inputPanel, BorderLayout.SOUTH);
 	}
 	
 	
-	private void initBasicActionPanel() {
-		this.basicActionPanel = new JPanel();
-		JButton cityButton = new JButton(new ImageIcon("sprites/city.png"));
-		JButton mapButton = new JButton(new ImageIcon("sprites/mapIcon.png"));
-		JButton playerButton = new JButton(new ImageIcon("sprites/player.png"));
-		JButton questionButton = new JButton(new ImageIcon("sprites/questionMark.png"));
-		JButton endTurn = new JButton("END TURN");
-		
-		endTurn.addActionListener(new ActionListener() {
-			
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				
-			}
-		});
-		basicActionPanel.add(cityButton);
-		basicActionPanel.add(mapButton);
-		basicActionPanel.add(playerButton);
-		basicActionPanel.add(questionButton);
-		basicActionPanel.add(endTurn);
+	private void initMapActionPanel() {
+		JPanel mapActionPanel = gameLogic.getMapActionPanel();
+		interactionPanel.add(mapActionPanel);
 	}
 	
 
@@ -101,15 +97,12 @@ public class GUI {
 		
 	}
 
-	public int offerBasicActions() {
-		return 0;
-	}
-
-	public void setInteractionPanel(JPanel panel) {
-		frame.remove(interactionPanel);
-		this.interactionPanel = panel;
-		frame.add(interactionPanel, BorderLayout.WEST);
+	public void setInputPanel(JPanel panel) {
+		mapObjectPanel.remove(inputPanel);
+		this.inputPanel = panel;
+		mapObjectPanel.add(this.inputPanel);
 		frame.validate();
 		frame.repaint();
 	}
 }
+

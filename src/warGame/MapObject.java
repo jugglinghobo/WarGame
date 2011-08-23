@@ -1,7 +1,5 @@
 package warGame;
 
-import javax.swing.JPanel;
-
 import ch.aplu.jgamegrid.*;
 
 /**
@@ -47,5 +45,9 @@ public abstract class MapObject extends Actor{
 
 	public int getPrice() {
 		return this.price;
+	}
+
+	public boolean isAlwaysVisible() {
+		return false;
 	}
 }

@@ -21,11 +21,12 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 		super(39, 60, 15, Color.LIGHT_GRAY, "sprites/map2_2.jpg", false, true);
 		this.bg = getBg();
 		initializeCities();
+		this.addMouseListener(this, GGMouse.lClick | GGMouse.lDrag | GGMouse.rClick | GGMouse.rDrag);
 	}
 
 	private void initializeCities() {
 		this.cities.add(new City("Bern", new Location(20, 20)));
-		this.cities.add(new City("Basel", new Location(40, 40)));
+		this.cities.add(new City("Basel", new Location(10, 10)));
 		this.cities.add(new City("Winti", new Location(30, 30)));
 		for (City c : cities) {
 			c.addMouseTouchListener(this, GGMouse.lClick, true);
@@ -37,12 +38,14 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 	@Override
 	public boolean mouseEvent(GGMouse mouse) {
 		Location clickLoc = toLocationInGrid(mouse.getX(), mouse.getY());
+		// add colored Squares with LMouse
 		if (mouse.getEvent() == GGMouse.lClick || mouse.getEvent() == GGMouse.lDrag) {
-			if (!coloredLocs.contains(clickLoc)) {
+			if (!coloredLocs.contains(clickLoc) && isEmpty(clickLoc)) {
+				bg.fillCell(clickLoc, activePlayer.getColor(), false);
 				coloredLocs.add(clickLoc);
 			}
-			bg.fillCell(clickLoc, activePlayer.getColor(), false);
 		}
+		// remove colored Squares with RMouse
 		if (mouse.getEvent() == GGMouse.rClick || mouse.getEvent() == GGMouse.rDrag) {
 			coloredLocs.remove(clickLoc);
 			bg.clear();
@@ -65,43 +68,9 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 				if (actor != null) {
 					MapObject clicked = (MapObject) actor;
 					clicked.offerActions();
-					Output.println("touched");
 				}
 			}
 		}
-	}
-
-	public void prepareFor(Player activePlayer) {
-		setActivePlayer(activePlayer);
-		clearMap();
-		for (MapObject mapObj : activePlayer.getMapObjects()) {
-			mapObj.show();
-		}
-		refresh();
-	}
-
-	private void clearMap() {
-		bg.clear();
-		for (Actor a : getActors()) {
-			a.hide();
-		}
-		for (Actor c : getActors(City.class)) {
-			c.show();
-		}
-	}
-
-	public void storeColoredLocsOf(Player activePlayer) {
-		ArrayList<Location> locs = new ArrayList<Location>(coloredLocs);
-		activePlayer.storeColoredLocs(locs);
-		coloredLocs.clear();
-	}
-
-	public void activateMouseListener() {
-		this.addMouseListener(this, GGMouse.lClick | GGMouse.lDrag | GGMouse.rClick | GGMouse.rDrag);
-	}
-	
-	public void deactivateMouseListener() {
-		this.removeMouseListener(this);
 	}
 
 	public ArrayList<City> getCities() {
@@ -109,21 +78,22 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 	}
 
 	public void build(MapObject mapObj) {
-		ArrayList<Location> buildLocs = activePlayer.getColoredLocs();
-		if (activePlayer.canPay(buildLocs.size() * mapObj.getPrice())) {
-			for (Location loc : buildLocs) {
+		if (activePlayer.canPay(coloredLocs.size() * mapObj.getPrice())) {
+			for (Location loc : coloredLocs) {
 				MapObject newObject = mapObj.copy();
+				newObject.setLocation(loc);
 				this.addActor(newObject, loc);
 				activePlayer.addMapObject(newObject);
 			}
-			Output.println("you just created " + buildLocs.size() + " new " + mapObj.toString());
-			refresh();
+			Output.println("you just created " + coloredLocs.size() + " new " + mapObj.toString());
+			clearMap();
 		}
 	}
 
 	public void buildTradingRoute() {
+		ArrayList<Location> colLocs = new ArrayList<Location>(coloredLocs);
 		build(new TradingRoute());
-		checkTradingConnection(activePlayer.getColoredLocs());
+		checkTradingConnection(colLocs);
 		
 	}
 
@@ -143,5 +113,28 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 				}
 			}
 		}
+	}
+
+	public void clearMap() {
+		coloredLocs.clear();
+		bg.clear();
+		refresh();
+	}
+	
+	public void prepareForNextPlayer() {
+		for (MapObject mapObj : activePlayer.getMapObjects()) {
+			if (!mapObj.isAlwaysVisible()) {
+				mapObj.hide();
+			}
+		}
+		refresh();
+	}
+
+	public void prepareFor(Player activePlayer) {
+		setActivePlayer(activePlayer);
+		for (MapObject mapObj : activePlayer.getMapObjects()) {
+			mapObj.show();
+		}
+		refresh();
 	}
 }

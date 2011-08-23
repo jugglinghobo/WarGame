@@ -20,11 +20,6 @@ public class FarmingLand extends MapObject {
 	}
 
 	@Override
-	public int getPrice() {
-		return this.price;
-	}
-
-	@Override
 	public MapObject copy() {
 		return new FarmingLand();
 	}

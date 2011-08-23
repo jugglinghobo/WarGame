@@ -1,6 +1,5 @@
 package warGame;
 
-import java.awt.GridLayout;
 import java.util.ArrayList;
 
 import javax.swing.*;
@@ -31,29 +30,17 @@ public class City extends MapObject{
 	
 	private String name;
 	private JPanel inputPanel;
-	private JTextPane outputPane;
 	private ArrayList<Building> buildings = new ArrayList<Building>();
 	private ArrayList<Warrior> warriors = new ArrayList<Warrior>();
-	private JPanel interactionPanel;
 
 	public City(String name, Location location) {
 		super("sprites/city.png");
 		this.name = name;
 		this.HP = 5;	// Cities are harder to destroy/overtake
-		initInteractionPanel();
+		initInputPanel();
 		
 		setLocation(location);
 	}
-
-
-	private void initInteractionPanel() {
-		this.interactionPanel = new JPanel(new GridLayout(2, 0, 5, 5));
-		initInputPanel();
-		initOutputPane();
-		interactionPanel.add(outputPane);
-		interactionPanel.add(inputPanel);
-	}
-
 
 	private void initInputPanel() {
 		this.inputPanel = new JPanel();
@@ -62,17 +49,14 @@ public class City extends MapObject{
 	}
 	
 	private void initButtons() {
-		// TODO Auto-generated method stub
-		
-	}
-
-
-	private void initOutputPane() {
-		this.outputPane = new JTextPane();
-		StringBuffer sb = new StringBuffer();
-		sb.append(this.toString());
-		sb.append(listStats());
-		outputPane.setText(sb.toString());
+		/* needs:
+		 *  - Casern
+		 *  - Forge
+		 *  - Soldier
+		 *  - Knight
+		 */
+		JButton button = new JButton(this.name);
+		inputPanel.add(button);
 	}
 
 	public void build(Building building) {
@@ -130,7 +114,7 @@ public class City extends MapObject{
 	
 	@Override
 	public int offerActions() {
-		Output.setInteractionPanel(this.interactionPanel);
+		Output.setInputPanel(this.inputPanel);
 		return 0;
 	}
 	
@@ -147,6 +131,11 @@ public class City extends MapObject{
 	
 	public String toString() {
 		return this.name.toUpperCase();
+	}
+	
+	@Override
+	public boolean isAlwaysVisible() {
+		return true;
 	}
 
 	@Override

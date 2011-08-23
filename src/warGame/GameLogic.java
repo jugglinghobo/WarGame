@@ -1,15 +1,17 @@
 package warGame;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Random;
-
 import javax.swing.*;
 
-import warGame.City.Building;
 
 public class GameLogic{
 	
+	/* MAIN */
 	public static void main(String[] args) {
 		new GUI(new GameLogic());
 	}
@@ -17,183 +19,101 @@ public class GameLogic{
 	
 	private ArrayList<Player> players = new ArrayList<Player>();
 	private Map map;
-	private JTextPane outputPane;	
-	private JPanel inputPanel;
+	private JPanel statsPanel;
+	private JTextArea namePanel;
+	private JPanel mapActionPanel;
+	private Player activePlayer;
 	
 	public GameLogic() {
+		initPanels();
 		initMap();
+	}
+	
+	private void initPanels() {
+		initStatsPanel();
+		initMapActionPanel();
+	}
+
+	private void initMapActionPanel() {
+		this.mapActionPanel = new JPanel();
+		JButton defWallButton = new JButton(new ImageIcon("sprites/wall.png"));
+		defWallButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				map.build(new DefenseWall());
+				setStatsPanel();
+			}
+		});
+		JButton farmLandButton = new JButton(new ImageIcon("sprites/farmingLand.png"));
+		farmLandButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				map.build(new FarmingLand());
+				setStatsPanel();
+			}
+		});
+		JButton tradingRouteButton = new JButton(new ImageIcon("sprites/tradingRoute.png"));
+		tradingRouteButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				map.buildTradingRoute();
+				setStatsPanel();
+			}
+		});
+		JButton clearMapButton = new JButton(new ImageIcon("sprites/mapIcon.png"));
+		clearMapButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				map.clearMap();
+			}
+		});
+		mapActionPanel.add(defWallButton);
+		mapActionPanel.add(farmLandButton);
+		mapActionPanel.add(tradingRouteButton);
+		mapActionPanel.add(clearMapButton);
+	}
+
+	private void initStatsPanel() {
+		
+		//needs Layout
+		this.statsPanel = new JPanel(new BorderLayout(5, 5));
+		initNamePanel();
+		initEndTurnButton();		
+	}
+	
+	private void initNamePanel() {
+		namePanel = new JTextArea();
+		namePanel.setEditable(false);
+		namePanel.setOpaque(false);
+		statsPanel.add(namePanel, BorderLayout.CENTER);
+	}
+
+	private void initEndTurnButton() {
+		JButton endTurnButton = new JButton("END TURN");
+		endTurnButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				map.prepareForNextPlayer();
+				playNextPlayer();
+			}
+		});
+		statsPanel.add(endTurnButton, BorderLayout.LINE_END);
 	}
 	
 	private void initMap() {
 		this.map = new Map();
 	}
 
-	private void play() {
-		Player activePlayer = players.remove(0);
-		map.setActivePlayer(activePlayer);
-		executeActions(activePlayer);
-		prepareForNextPlayer(activePlayer);
+	protected void playNextPlayer() {
+		activePlayer = players.remove(0);
+		map.prepareFor(activePlayer);
+		setStatsPanel();
 		players.add(activePlayer);
 	}
 
-	private void executeActions(Player activePlayer) {
-		map.prepareFor(activePlayer);
-		boolean done= false;
-		while (!done) {
-			Output.println(activePlayer.toString() + " is playing");
-			int action = offerActions();
-			switch (action) {
-			//manage Cities
-			case 1: {
-				boolean MenuchooseCity = false;
-				while (!MenuchooseCity) {
-					City chosenCity = activePlayer.chooseCity(activePlayer.getCities());
-					boolean MenuChooseAction = false;
-					while (!MenuChooseAction) {
-						int cityAction = 0;//chosenCity.offerActions();
-						switch (cityAction) {
-						// Casern
-						case 1: {
-							chosenCity.build(Building.CASERN);
-							} break;
-						// Forge
-						case 2: {
-							chosenCity.build(Building.FORGE);
-							} break;
-						 // Soldiers
-						case 3: {
-							int number = askForNumber("how many new Soldiers would you like to have?");
-							chosenCity.create(new Soldier(activePlayer), number);
-							} break;
-						 // Knights
-						case 4: {
-							int number = askForNumber("how many new Knights would you like to have?");
-							chosenCity.create(new Knight(activePlayer), number);
-							} break;
-						default: {
-							MenuChooseAction = true;
-						}
-						}
-					}
-					MenuchooseCity = !askQuestion("would you like to manage another City?");
-				}
-				} break;
-			// manage map squares
-			case 2: {
-				boolean markedAll = false;
-				while (!markedAll) {
-					boolean marked = false;
-					map.activateMouseListener();
-					map.prepareFor(activePlayer);
-					while (!marked) {
-						marked = askQuestion("have you marked all the Squares you want?");
-					}
-					map.storeColoredLocsOf(activePlayer);
-					map.deactivateMouseListener();
-					int markedAction = offerMarkedSquaresActions();
-					switch (markedAction) {
-					// defenseWall
-					case 1: {
-						map.build(new DefenseWall());
-						marked = true;
-						} break;
-					// farming land
-					case 2: {
-						map.build(new FarmingLand());
-						marked = true;
-						} break;
-					// trading route
-					case 3: {
-						map.buildTradingRoute();
-					}
-					default: {
-						markedAll = true;
-					}
-					}
-				}
-				}break;
-			case 3: {
-				Output.println(activePlayer.listStats());
-				} break;
-			case 4: {
-				boolean gotInfo = false;
-				while (!gotInfo) {
-				int info = listInfo();
-					switch(info) {
-					// City info
-					case 1: {
-						Output.println(new City(null, null).getInfo());
-						} break;
-					// Soldiers info
-					case 2: {
-						Output.println(new Soldier(null).getInfo());
-						} break;
-					case 3: {
-						Output.println(new Knight(null).getInfo());
-						} break;
-					case 4: {
-						Output.println(Building.CASERN.getInfo());
-						} break;
-					case 5: {
-						Output.println(Building.FORGE.getInfo());
-					}
-						
-					default: {
-						gotInfo = true;
-					}
-					}
-				}
-			} break;
-			default: {
-				done = askQuestion("do you really want to end your turn?\n");
-				}
-			}
-		}
-	}
-
-	private int askForNumber(String question) {
-		Output.println(question);
-		return Input.nextInt();
-	}
-	
-	private int listInfo() {
-		StringBuffer sb = new StringBuffer();
-		sb.append("1: Cities\n2: Soldiers\n3: Knights\n4: Caserns\n5: Forges\n0: I have no more questions");
-		int input = askForNumber("what would you like to know:\n" + sb.toString());
-		return input;
-	}
-
-	private int offerMarkedSquaresActions() {
-		Output.println("What would you like to do with those Squares?");
-		Output.println("0: do nothing, back to main menu\n1: build a Defense Wall\n2: build Farming Land\n3: build Trading Route");
-		int action = Input.nextInt();
-		return action;
-	}
-
-	private int offerActions() {
-		Output.println("what would you like to do? please enter a number:");
-		Output.println("0: end turn\n1: manage my cities\n2: build something on the Map\n3: list your Stats\n4: get some Informations");
-		int action = Input.nextInt();
-		return action;
-	}
-
-	private void prepareForNextPlayer(Player activePlayer) {
-		map.prepareFor(activePlayer);
-	}
-
-	private boolean isOver() {
-		for (Player p : this.players) {
-			if (p.isWinner()) {
-				displayWinner(p);
-				return true;
-			}
-		}
-		return false;
-	}
-
-	private void displayWinner(Player p) {
-		Output.println("The winner is "+ p.toString());
-		
+	private void setStatsPanel() {
+		this.namePanel.setText(activePlayer.getName() + "    " + activePlayer.getMoney() + "$");
 	}
 
 	public void init() {
@@ -207,7 +127,7 @@ public class GameLogic{
 		int i = 1;
 		while (!done) {
 			String name = (String) getInput("Player " + i + " , please enter your name", "sprites/player.png");
-			if (name != null && !usedNames.contains(name)) {
+			if (!usedNames.contains(name)) {
 				usedNames.add(name);
 				i++;
 				this.players.add(new Player(name));
@@ -217,7 +137,7 @@ public class GameLogic{
 				}
 			}
 		}
-		outputPane.setText("");
+		Output.println("");
 		for (Player p : players) {
 			Color color = getRandomColor();
 			p.setColor(color);
@@ -232,15 +152,17 @@ public class GameLogic{
 			Output.println(activePlayer + " chose " + chosenCity);
 			cities.remove(chosenCity);
 			activePlayer.addCity(chosenCity);
-			chosenCity.setPlayer(activePlayer);
 			this.players.add(activePlayer);
 		}
-		outputPane.setText("");
+		Output.println("");
 	}
 	
 	
 	private Object getInput(String string, String iconPath) {
 		Object input = JOptionPane.showInputDialog(null, string, "NEW PLAYER", JOptionPane.QUESTION_MESSAGE, new ImageIcon(iconPath), null, null);
+		if (input == null) {
+			System.exit(0);
+		}
 		return input;
 	}
 	
@@ -269,23 +191,15 @@ public class GameLogic{
 		return new Color(gen.nextInt(256), gen.nextInt(256), gen.nextInt(256));
 	}
 	
-
-	private boolean askQuestion(String question) {
-		Output.println(question);
-		String answer = Input.nextString();
-		Output.println(answer);
-		if (answer.contains("y")) {
-			return true;
-		}
-		return false;
-	}
-
 	public Map getMap() {
 		return this.map;
 	}
 
-	public void setInteractionPanel(JTextPane outputPane, JPanel inputPanel) {
-		this.outputPane = outputPane;
-		this.inputPanel = inputPanel;
+	public JPanel getStatsPanel() {
+		return this.statsPanel;
+	}
+
+	public JPanel getMapActionPanel() {
+		return this.mapActionPanel;
 	}
 }

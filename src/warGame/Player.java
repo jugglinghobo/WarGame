@@ -2,7 +2,7 @@ package warGame;
 
 import java.awt.Color;
 import java.util.ArrayList;
-
+import javax.swing.JOptionPane;
 import ch.aplu.jgamegrid.Location;
 
 public class Player {
@@ -10,7 +10,6 @@ public class Player {
 	private String name;
 	private int money = 300000;
 	private Color color;
-	private ArrayList<Location> coloredLocs = new ArrayList<Location>();
 	private ArrayList<City> cities = new ArrayList<City>();
 	private ArrayList<Warrior> warriors = new ArrayList<Warrior>();
 	private ArrayList<MapObject> mapObjects = new ArrayList<MapObject>();
@@ -33,66 +32,32 @@ public class Player {
 		return name;
 	}
 
-	public boolean isWinner() {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
 	public boolean canPay(int price) {
-		if (askQuestion("this will const you " + price + " money\ndo you want to buy that?")) {
+		int option = JOptionPane.showConfirmDialog(null, "This will cost you " + price + " money", null, JOptionPane.YES_NO_OPTION,
+				JOptionPane.PLAIN_MESSAGE, null);
+		if (option == JOptionPane.OK_OPTION) {
 			if (money - price >= 0) {
 				money -= price;
 				return true;
-			}
+			} else {
 			Output.println("You have not enough Money");
 			return false;
+			}
 		} else {
 			return false;
 		}
 		
 	}
-	
-	public Color getColor() {
-		return this.color;
-	}
-
-	public void setColor(Color color) {
-		this.color = color;
-	}
-
-	public void storeColoredLocs(ArrayList<Location> coloredLocs) {
-		this.coloredLocs = coloredLocs;
-	}
-
-	public ArrayList<Location> getColoredLocs() {
-		return this.coloredLocs;
-	}
 
 	public void addCity(City chosenCity) {
 		this.cities.add(chosenCity);
+		this.mapObjects.add(chosenCity);
 		this.tradingRoutes.add(chosenCity.getLocation());
-	}
-
-	public void listCities(ArrayList<City> cities) {
-		int i = 1;
-		for (City c : cities) {
-			Output.println(i + ": " + c.toString());
-			i++;
-		}
+		chosenCity.setPlayer(this);
 	}	
 
 	public ArrayList<City> getCities() {
 		return this.cities;
-	}
-
-	public City chooseCity(ArrayList<City> cities) {
-		Output.println(this.name + ", choose a City");
-		listCities(cities);
-		int chosen = Input.nextInt()-1;
-		while (chosen > cities.size()-1) {
-			chosen = Input.nextInt()-1;
-		}
-		return cities.get(chosen);
 	}
 
 	public void addMapObject(MapObject mapObj) {
@@ -116,17 +81,14 @@ public class Player {
 		}
 		return sb.toString();
 	}
-	
-	private boolean askQuestion(String question) {
-		Output.println(question);
-		String answer = Input.nextString();
-		if (answer.contains("y")) {
-			return true;
+
+	public void addConnectedCity(City c) {
+		if (!this.connectedCities.contains(c)) {
+			this.connectedCities.add(c);
+			Output.println("Congrats, you added " + c.toString() + " to your trading network");
 		}
-		return false;
 	}
-
-
+	
 	public ArrayList<Location> getTradingRoutes() {
 		return this.tradingRoutes;
 	}
@@ -136,10 +98,15 @@ public class Player {
 		
 	}
 
-	public void addConnectedCity(City c) {
-		if (!this.connectedCities.contains(c)) {
-			this.connectedCities.add(c);
-			Output.println("Congrats, you added " + c.toString() + " to your trading network");
-		}
+	public int getMoney() {
+		return this.money;
+	}
+	
+	public Color getColor() {
+		return this.color;
+	}
+
+	public void setColor(Color color) {
+		this.color = color;
 	}
 }
