@@ -15,15 +15,19 @@ abstract class Output {
 		instance = o;
 	}
 	
-	public static void setInputPanel(JPanel panel) {
-		instance.updateInputPanel(panel);
+	public static void setInputPanel(MapObject obj, JPanel panel) {
+		instance.updateInputPanel(obj, panel);
+	}
+	
+	public static void updateStats() {
+		instance.setStats();
 	}
 
 	private static boolean willPrintout = true;
 
 	public abstract void output(String s);
 	
-	public abstract void updateInputPanel(JPanel panel);
+	public abstract void updateInputPanel(MapObject obj, JPanel panel);
 
 	public static void mute() {
 		willPrintout = false;
@@ -33,6 +37,14 @@ abstract class Output {
 		willPrintout = true;
 	}
 
+	public abstract void setStats();
+
+	public static void clearPanel() {
+		instance.resetPanel();
+		
+	}
+
+	public abstract void resetPanel();
 }
 
 class StdOutput extends Output {
@@ -43,7 +55,15 @@ class StdOutput extends Output {
 	}
 
 	@Override
-	public void updateInputPanel(JPanel panel) {
+	public void updateInputPanel(MapObject obj, JPanel panel) {
+	}
+
+	@Override
+	public void setStats() {
+	}
+
+	@Override
+	public void resetPanel() {
 	}
 }
 
@@ -58,8 +78,19 @@ class GuiOutput extends Output {
 		gui.sendOutput("\n" + s + "\n");
 	}
 	
-	public void updateInputPanel(JPanel panel) {
+	public void updateInputPanel(MapObject obj, JPanel panel) {
 		gui.setInputPanel(panel);
+	}
+
+	@Override
+	public void setStats() {
+		gui.updateStats();
+	}
+
+	@Override
+	public void resetPanel() {
+		gui.resetInteractionPanel();
+		
 	}
 	
 }

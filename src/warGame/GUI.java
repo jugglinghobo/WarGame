@@ -1,6 +1,7 @@
 package warGame;
 
 import java.awt.*;
+
 import javax.swing.*;
 
 public class GUI {
@@ -41,10 +42,8 @@ public class GUI {
 	}
 
 	private void initMapPanel() {
-		JPanel mapPanel = new JPanel();
 		Map map = gameLogic.getMap();
-		mapPanel.add(map);
-		frame.add(mapPanel, BorderLayout.LINE_END);
+		frame.add(map, BorderLayout.LINE_END);
 	}
 	
 	private void initInteractionPanel() {
@@ -61,7 +60,7 @@ public class GUI {
 		outputPane.setPreferredSize(new Dimension(100, 100));
 		outputPane.setEditable(false);
 		outputPane.setOpaque(false);
-		interactionPanel.add(outputPane, BorderLayout.LINE_START);
+		interactionPanel.add(outputPane);
 	}
 	
 	/*
@@ -101,8 +100,22 @@ public class GUI {
 		mapObjectPanel.remove(inputPanel);
 		this.inputPanel = panel;
 		mapObjectPanel.add(this.inputPanel);
+		this.inputPanel.setVisible(true);
 		frame.validate();
 		frame.repaint();
+	}
+
+	public void updateStats() {
+		gameLogic.setStatsPanel();
+		frame.validate();
+		frame.repaint();
+	}
+
+	public void resetInteractionPanel() {
+		this.inputPanel.setVisible(false);
+		frame.validate();
+		frame.repaint();
+		
 	}
 }
 

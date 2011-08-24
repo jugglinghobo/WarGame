@@ -3,6 +3,8 @@ package warGame;
 import java.awt.Color;
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+
 import ch.aplu.jgamegrid.Location;
 
 public class Player {
@@ -38,6 +40,7 @@ public class Player {
 		if (option == JOptionPane.OK_OPTION) {
 			if (money - price >= 0) {
 				money -= price;
+				Output.updateStats();
 				return true;
 			} else {
 			Output.println("You have not enough Money");
@@ -70,16 +73,6 @@ public class Player {
 
 	public void addWarrior(Warrior warrior) {
 		this.warriors.add(warrior);
-	}
-
-	public String listStats() {
-		StringBuffer sb = new StringBuffer();
-		sb.append(this.name.toUpperCase() + ": Money: " + this.money + "\n");
-		for (City c : this.cities) {
-			sb.append(c.toString() + ": \n");
-			sb.append(c.listStats() + "\n");
-		}
-		return sb.toString();
 	}
 
 	public void addConnectedCity(City c) {

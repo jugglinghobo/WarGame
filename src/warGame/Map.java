@@ -18,7 +18,7 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 	private GGBackground bg;	
 
 	public Map() {
-		super(39, 60, 15, Color.LIGHT_GRAY, "sprites/map2_2.jpg", false, true);
+		super(39, 53, 15, Color.LIGHT_GRAY, "sprites/map2_2.jpg", false, true);
 		this.bg = getBg();
 		initializeCities();
 		this.addMouseListener(this, GGMouse.lClick | GGMouse.lDrag | GGMouse.rClick | GGMouse.rDrag);
@@ -67,7 +67,11 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 			case (GGMouse.lClick): {
 				if (actor != null) {
 					MapObject clicked = (MapObject) actor;
-					clicked.offerActions();
+					if (activePlayer.getMapObjects().contains(clicked)) {
+						clicked.offerActions();
+					} else {
+						Output.clearPanel();
+					}
 				}
 			}
 		}

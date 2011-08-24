@@ -41,7 +41,6 @@ public class GameLogic{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				map.build(new DefenseWall());
-				setStatsPanel();
 			}
 		});
 		JButton farmLandButton = new JButton(new ImageIcon("sprites/farmingLand.png"));
@@ -49,7 +48,6 @@ public class GameLogic{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				map.build(new FarmingLand());
-				setStatsPanel();
 			}
 		});
 		JButton tradingRouteButton = new JButton(new ImageIcon("sprites/tradingRoute.png"));
@@ -57,7 +55,6 @@ public class GameLogic{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				map.buildTradingRoute();
-				setStatsPanel();
 			}
 		});
 		JButton clearMapButton = new JButton(new ImageIcon("sprites/mapIcon.png"));
@@ -94,25 +91,32 @@ public class GameLogic{
 			
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				map.prepareForNextPlayer();
+				prepareForNextPlayer();
 				playNextPlayer();
 			}
 		});
 		statsPanel.add(endTurnButton, BorderLayout.LINE_END);
 	}
 	
+	protected void prepareForNextPlayer() {
+		Output.println("");
+		map.prepareForNextPlayer();
+		
+	}
+
 	private void initMap() {
 		this.map = new Map();
 	}
 
 	protected void playNextPlayer() {
+		Output.clearPanel();
 		activePlayer = players.remove(0);
 		map.prepareFor(activePlayer);
 		setStatsPanel();
 		players.add(activePlayer);
 	}
 
-	private void setStatsPanel() {
+	public void setStatsPanel() {
 		this.namePanel.setText(activePlayer.getName() + "    " + activePlayer.getMoney() + "$");
 	}
 
