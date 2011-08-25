@@ -2,11 +2,7 @@ package warGame;
 
 import java.awt.Color;
 import java.awt.Point;
-import java.nio.channels.AlreadyConnectedException;
 import java.util.ArrayList;
-
-import com.sun.tools.internal.xjc.reader.gbind.ConnectedComponent;
-
 import ch.aplu.jgamegrid.*;
 
 public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListener{
@@ -25,7 +21,7 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 		super(39, 53, 15, Color.LIGHT_GRAY, "sprites/map2_2.jpg", false, true);
 		this.bg = getBg();
 		initializeCities();
-		this.addMouseListener(this, GGMouse.lClick | GGMouse.lDrag | GGMouse.rClick | GGMouse.rDrag);
+		this.addMouseListener(this, GGMouse.lDrag | GGMouse.rClick | GGMouse.rDrag);
 	}
 
 	private void initializeCities() {
@@ -110,13 +106,16 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 						a.show();
 					}
 				} else {
+					removeMouseListener(this);
 					MapObject newObject = mapObj.copy();
 					newObject.setLocation(loc);
-					this.addActor(newObject, loc);
 					activePlayer.addMapObject(newObject);
 					if (mapObj.getClass().equals(TradingRoute.class)) {
 						activePlayer.addTradingRoute(loc);
 					}
+					newObject.addMouseTouchListener(this, GGMouse.lClick, true);
+					this.addActor(newObject, newObject.getLocation());
+					this.addMouseListener(this, GGMouse.lClick | GGMouse.lDrag | GGMouse.rClick | GGMouse.rDrag);
 				}
 			}
 			Output.println("you just created " + coloredLocs.size() + " new " + mapObj.toString());
@@ -135,7 +134,6 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 		ArrayList<City> cities = new ArrayList<City>(activePlayer.getCities());
 		for (City c : cities) {
 			c.checkTradingConnection(existingTradingRoutes, cities);
-			System.out.println(c.toString() + "connected: " + c.getConnectedCities().toString());
 		}
 	}
 

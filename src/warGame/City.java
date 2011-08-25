@@ -32,7 +32,6 @@ public class City extends MapObject {
 	}
 
 	private String name;
-	private JPanel inputPanel;
 	private ArrayList<Building> buildings = new ArrayList<Building>();
 	private ArrayList<Warrior> warriors = new ArrayList<Warrior>();
 	private ArrayList<City> connectedCities = new ArrayList<City>();
@@ -42,12 +41,11 @@ public class City extends MapObject {
 		this.name = name;
 		this.HP = 5; // Cities are harder to destroy/overtake
 		initInputPanel();
-
 		setLocation(location);
 	}
 
 	private void initInputPanel() {
-		this.inputPanel = new JPanel();
+		inputPanel = new JPanel();
 		initButtons();
 
 	}
@@ -75,7 +73,9 @@ public class City extends MapObject {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int number = getIntegerInput("How many do you want to make?");
-				create(new Soldier(null), number);	
+				if (number != 0 ) {
+					create(new Soldier(null), number);
+				}	
 			}
 		});
 		JButton knightButton = new JButton("Knight");
@@ -83,7 +83,9 @@ public class City extends MapObject {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int number = getIntegerInput("How many do you want to make?");
-				create(new Knight(null), number);
+				if (number != 0 ) {
+					create(new Knight(null), number);
+				}
 			}
 		});
 		JButton leaveWarriorButton = new JButton("leave Warriors");
@@ -91,8 +93,13 @@ public class City extends MapObject {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Warrior w = chooseWarrior();
-				int number = getIntegerInput("How many warriors do you want to leave?");
-				leaveWarriors(w, number);
+				if (!w.getClass().equals(DefaultWarrior.class)) {
+					int number = getIntegerInput("How many warriors do you want to leave?");
+					if (number != 0 ) {
+						leaveWarriors(w, number);
+					}
+
+				}
 			}
 		});
 
@@ -123,17 +130,19 @@ public class City extends MapObject {
 				for (Warrior w : realCheckOut) {
 					this.warriors.remove(w);
 				}
-				Output.println("so many " + realCheckOut.get(0).toString() + " have left town: " + realCheckOut.size());
+				Output.println("so many " + realCheckOut.get(0).toString() + "s have left town: " + realCheckOut.size());
 				realCheckOut.clear();
 			}
 		
 	}
 
-	//TODO need to fix CLOSE_OPERATION exception
 	protected Warrior chooseWarrior() {
 		Object[] warriors = {new Soldier(null), new Knight(null)};
 		int input = JOptionPane.showOptionDialog(null, "what kind of warriors want you to leave the city?", "Leave Warriors",
 				JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, warriors, null);
+		if (input == JOptionPane.CLOSED_OPTION) {
+			return new DefaultWarrior();
+		}
 		return (Warrior) warriors[input];
 	}
 
@@ -142,6 +151,9 @@ public class City extends MapObject {
 		boolean ok = false;
 		while (!ok) {
 			answer = JOptionPane.showInputDialog(question);
+			if (answer == null) {
+				return 0;
+			}
 			try {
 				Integer.parseInt(answer);
 				ok = true;
@@ -169,7 +181,7 @@ public class City extends MapObject {
 						player.addWarrior(newWarrior);
 					}
 					Output.println("you just created: " + number + " "
-							+ warrior.toString() + "S. Real size of warriors:" + this.warriors.size());
+							+ warrior.toString() + "s");
 				}
 			} else {
 				Output.println("you need to build a " + warrior.requiredBuilding()
@@ -177,42 +189,8 @@ public class City extends MapObject {
 			}
 		}
 	}
-
-	public String listStats() {
-		StringBuffer sb = new StringBuffer();
-		int casernCounter = 0;
-		int forgeCounter = 0;
-		for (Building b : this.buildings) {
-			if (b.equals(Building.CASERN)) {
-				casernCounter++;
-			}
-			if (b.equals(Building.FORGE)) {
-				forgeCounter++;
-			}
-		}
-		sb.append("CASERNS: " + casernCounter + "\n");
-		sb.append("FORGES: " + forgeCounter + "\n");
-		int soldierCounter = 0;
-		int knightCounter = 0;
-		for (Warrior w : this.warriors) {
-			if (w.getType().equals("SOLDIER")) {
-				soldierCounter++;
-			}
-			if (w.getType().equals("KNIGHT")) {
-				knightCounter++;
-			}
-		}
-		sb.append("SOLDIERS: " + soldierCounter + "\n");
-		sb.append("KNIGHTS: " + knightCounter + "\n");
-		return sb.toString();
-	}
-
-	@Override
-	public int offerActions() {
-		Output.setInputPanel(this, this.inputPanel);
-		return 0;
-	}
-
+	
+	
 	// should never be called!
 	@Override
 	public MapObject copy() {
@@ -247,14 +225,27 @@ public class City extends MapObject {
 		for (Location loc : cityNeighbours) {
 			if (existingTradingRoutes.contains(loc)) {
 				uncheckedTradingRoutes.remove(loc);
+				int oldNetworkSize = this.connectedCities.size();
 				findPathFrom(loc, uncheckedTradingRoutes, allCities);
+				int difference = this.connectedCities.size() - oldNetworkSize;
+				ArrayList<City> newAdded = new ArrayList<City>();
+				if (difference > 0) {
+					newAdded.addAll(connectedCities.subList(connectedCities.size()-difference, connectedCities.size()));
+					StringBuffer sb = new StringBuffer();
+					sb.append("You successfully connected " );
+					for (City c : newAdded) {
+						sb.append(c.toString() + ", ");
+					}
+					sb.delete(sb.length()-2, sb.length());
+					Output.println(sb.toString());
+				}
 			}
 		}
 	}
 
-	private void findPathFrom(Location loc, ArrayList<Location> uncheckedTradingRoutes, ArrayList<City> allCities) {
+	private void findPathFrom(Location loc, ArrayList<Location> uncheckedTradingRoutes, ArrayList<City> playerCities) {
 		for (Location neighbour : loc.getNeighbourLocations(0.5)) {
-			for (City c : allCities) {
+			for (City c : playerCities) {
 				if (c.location.equals(neighbour)) {
 					if (!this.connectedCities.contains(c)) {
 						this.connectedCities.add(c);
@@ -263,7 +254,7 @@ public class City extends MapObject {
 			}
 			if (uncheckedTradingRoutes.contains(neighbour)) {
 				uncheckedTradingRoutes.remove(neighbour);
-				findPathFrom(neighbour, uncheckedTradingRoutes, allCities);
+				findPathFrom(neighbour, uncheckedTradingRoutes, playerCities);
 			}
 		}
 		

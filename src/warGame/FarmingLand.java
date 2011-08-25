@@ -10,11 +10,6 @@ public class FarmingLand extends MapObject {
 		this.price = 4;
 	}
 
-	@Override
-	public int offerActions() {
-		return 0;
-	}
-
 	public Location getLocation() {
 		return this.location;
 	}

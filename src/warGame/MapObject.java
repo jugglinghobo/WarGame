@@ -1,5 +1,11 @@
 package warGame;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
 import ch.aplu.jgamegrid.*;
 
 /**
@@ -13,14 +19,28 @@ public abstract class MapObject extends Actor{
 	Location location;
 	int price;
 	int HP;
+	JPanel inputPanel;
 	
 	public MapObject(String imgPath) {
 		super(imgPath);
-		setCollisionImage();
 		this.HP = 1;
+		initInputPanel();
 		show();
 	}
 	
+	private void initInputPanel() {
+		inputPanel = new JPanel();
+		JButton destroyButton = new JButton("DESTROY");
+		destroyButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				removeSelf();
+				Output.refreshMap();
+			}
+		});
+		inputPanel.add(destroyButton);
+	}
+
 	public void setPlayer(Player player) {
 		this.player = player;
 	}
@@ -35,7 +55,9 @@ public abstract class MapObject extends Actor{
 	
 	public abstract Location getLocation();
 	
-	public abstract int offerActions();
+	public void offerActions() {
+		Output.setInputPanel(inputPanel);
+	}
 	
 	public abstract MapObject copy();
 	

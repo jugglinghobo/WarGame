@@ -14,6 +14,7 @@ public class GUI {
 	private GameLogic gameLogic;
 	private JPanel statsPanel;
 	private JPanel mapObjectPanel;
+	private Map map;
 
 	public GUI(GameLogic gameLogic) {
 		Output.setOutput(new GuiOutput(this));
@@ -42,7 +43,7 @@ public class GUI {
 	}
 
 	private void initMapPanel() {
-		Map map = gameLogic.getMap();
+		map = gameLogic.getMap();
 		frame.add(map, BorderLayout.LINE_END);
 	}
 	
@@ -115,6 +116,11 @@ public class GUI {
 		this.inputPanel.setVisible(false);
 		frame.validate();
 		frame.repaint();
+		
+	}
+
+	public void refreshMap() {
+		this.map.refresh();
 		
 	}
 }

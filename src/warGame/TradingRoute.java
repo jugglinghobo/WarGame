@@ -15,11 +15,6 @@ public class TradingRoute extends MapObject {
 	}
 
 	@Override
-	public int offerActions() {
-		return 0;
-	}
-
-	@Override
 	public MapObject copy() {
 		return new TradingRoute();
 	}

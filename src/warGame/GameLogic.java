@@ -71,8 +71,6 @@ public class GameLogic{
 	}
 
 	private void initStatsPanel() {
-		
-		//needs Layout
 		this.statsPanel = new JPanel(new BorderLayout(5, 5));
 		initNamePanel();
 		initEndTurnButton();		
@@ -163,9 +161,9 @@ public class GameLogic{
 	
 	
 	private Object getInput(String string, String iconPath) {
-		Object input = JOptionPane.showInputDialog(null, string, "NEW PLAYER", JOptionPane.QUESTION_MESSAGE, new ImageIcon(iconPath), null, null);
-		if (input == null) {
-			System.exit(0);
+		Object input = null;
+		while (input == null) {
+			input = JOptionPane.showInputDialog(null, string, "NEW PLAYER", JOptionPane.QUESTION_MESSAGE, new ImageIcon(iconPath), null, null);
 		}
 		return input;
 	}

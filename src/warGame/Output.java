@@ -15,8 +15,8 @@ abstract class Output {
 		instance = o;
 	}
 	
-	public static void setInputPanel(MapObject obj, JPanel panel) {
-		instance.updateInputPanel(obj, panel);
+	public static void setInputPanel(JPanel panel) {
+		instance.updateInputPanel(panel);
 	}
 	
 	public static void updateStats() {
@@ -27,7 +27,7 @@ abstract class Output {
 
 	public abstract void output(String s);
 	
-	public abstract void updateInputPanel(MapObject obj, JPanel panel);
+	public abstract void updateInputPanel(JPanel panel);
 
 	public static void mute() {
 		willPrintout = false;
@@ -45,6 +45,13 @@ abstract class Output {
 	}
 
 	public abstract void resetPanel();
+
+	public static void refreshMap() {
+		instance.refresh();
+		
+	}
+
+	public abstract void refresh();
 }
 
 class StdOutput extends Output {
@@ -55,7 +62,7 @@ class StdOutput extends Output {
 	}
 
 	@Override
-	public void updateInputPanel(MapObject obj, JPanel panel) {
+	public void updateInputPanel(JPanel panel) {
 	}
 
 	@Override
@@ -64,6 +71,12 @@ class StdOutput extends Output {
 
 	@Override
 	public void resetPanel() {
+	}
+
+	@Override
+	public void refresh() {
+		// TODO Auto-generated method stub
+		
 	}
 }
 
@@ -78,7 +91,7 @@ class GuiOutput extends Output {
 		gui.sendOutput("\n" + s + "\n");
 	}
 	
-	public void updateInputPanel(MapObject obj, JPanel panel) {
+	public void updateInputPanel(JPanel panel) {
 		gui.setInputPanel(panel);
 	}
 
@@ -91,6 +104,12 @@ class GuiOutput extends Output {
 	public void resetPanel() {
 		Output.println("");
 		gui.resetInteractionPanel();
+		
+	}
+
+	@Override
+	public void refresh() {
+		gui.refreshMap();
 		
 	}
 	
