@@ -35,6 +35,7 @@ public class City extends MapObject {
 	private JPanel inputPanel;
 	private ArrayList<Building> buildings = new ArrayList<Building>();
 	private ArrayList<Warrior> warriors = new ArrayList<Warrior>();
+	private ArrayList<City> connectedCities = new ArrayList<City>();
 
 	public City(String name, Location location) {
 		super("sprites/city.png");
@@ -239,4 +240,37 @@ public class City extends MapObject {
 				+ "Money and Food stored there. You can also store as many warriors as you like in a city without them needing Food ";
 		return info;
 	}
+
+	public void checkTradingConnection(ArrayList<Location> existingTradingRoutes, ArrayList<City> allCities) {
+		ArrayList<Location> uncheckedTradingRoutes = new ArrayList<Location>(existingTradingRoutes);
+		ArrayList<Location> cityNeighbours = this.location.getNeighbourLocations(0.5);
+		for (Location loc : cityNeighbours) {
+			if (existingTradingRoutes.contains(loc)) {
+				uncheckedTradingRoutes.remove(loc);
+				findPathFrom(loc, uncheckedTradingRoutes, allCities);
+			}
+		}
+	}
+
+	private void findPathFrom(Location loc, ArrayList<Location> uncheckedTradingRoutes, ArrayList<City> allCities) {
+		for (Location neighbour : loc.getNeighbourLocations(0.5)) {
+			for (City c : allCities) {
+				if (c.location.equals(neighbour)) {
+					if (!this.connectedCities.contains(c)) {
+						this.connectedCities.add(c);
+					}
+				}
+			}
+			if (uncheckedTradingRoutes.contains(neighbour)) {
+				uncheckedTradingRoutes.remove(neighbour);
+				findPathFrom(neighbour, uncheckedTradingRoutes, allCities);
+			}
+		}
+		
+	}
+
+	public ArrayList<City> getConnectedCities() {
+		return this.connectedCities;
+	}
+	
 }

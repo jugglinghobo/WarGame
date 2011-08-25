@@ -89,6 +89,7 @@ class GuiOutput extends Output {
 
 	@Override
 	public void resetPanel() {
+		Output.println("");
 		gui.resetInteractionPanel();
 		
 	}

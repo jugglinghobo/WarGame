@@ -14,7 +14,6 @@ public class Player {
 	private ArrayList<City> cities = new ArrayList<City>();
 	private ArrayList<Warrior> warriors = new ArrayList<Warrior>();
 	private ArrayList<MapObject> mapObjects = new ArrayList<MapObject>();
-	private ArrayList<City> connectedCities = new ArrayList<City>();
 	private ArrayList<Location> tradingRoutes = new ArrayList<Location>();
 
 	public Player(String name) {
@@ -72,13 +71,6 @@ public class Player {
 
 	public void addWarrior(Warrior warrior) {
 		this.warriors.add(warrior);
-	}
-
-	public void addConnectedCity(City c) {
-		if (!this.connectedCities.contains(c)) {
-			this.connectedCities.add(c);
-			Output.println("Congrats, you added " + c.toString() + " to your trading network");
-		}
 	}
 	
 	public ArrayList<Location> getTradingRoutes() {
