@@ -1,5 +1,6 @@
 package warGame;
 
+import ch.aplu.jgamegrid.Location;
 import warGame.City.Building;
 
 public class Knight extends Warrior {
@@ -8,10 +9,10 @@ public class Knight extends Warrior {
 	private int HP = 2;
 	private int AP = 3;
 	private int movement = 10;
-	private String type = "KNIGHT";
 	
-	public Knight(Player player) {
-		super(player);
+	public Knight(Player player, Location loc) {
+		super("sprites/knight.png", loc);
+//		this.location = loc;
 	}
 
 	@Override
@@ -35,13 +36,8 @@ public class Knight extends Warrior {
 	}
 
 	@Override
-	public String getType() {
-		return this.type;
-	}
-
-	@Override
 	public Warrior copy() {
-		return new Knight(player);
+		return new Knight(getPlayer(), location);
 	}
 
 	@Override
@@ -50,10 +46,7 @@ public class Knight extends Warrior {
 	}
 
 	@Override
-	public String getInfo() {
-		String info = "Knight:\nPrice: 12/3\nHP: 2\nAP: 3\nMov: 10\nKnights are strong Warriors" +
-				" capable of bringing sheer terror into enemy lines. They can move long distances and are hard to kill, " +
-				"and even few Knights can turn a battle into slaughter!";
-		return info;
+	public String toString() {
+		return "WARRIOR";
 	}
 }

@@ -35,13 +35,17 @@ public class City extends MapObject {
 	private ArrayList<Building> buildings = new ArrayList<Building>();
 	private ArrayList<Warrior> warriors = new ArrayList<Warrior>();
 	private ArrayList<City> connectedCities = new ArrayList<City>();
+	private Map map;
+	private Location spawnLocation;
 
-	public City(String name, Location location) {
-		super("sprites/city.png");
+	public City(Map map, String name, Location location) {
+		super("sprites/city.png", location);
+		this.map = map;
 		this.name = name;
-		this.HP = 5; // Cities are harder to destroy/overtake
+		this.HP = 5;
 		initInputPanel();
 		setLocation(location);
+		this.spawnLocation = new Location(this.location.x, this.location.y-1);
 	}
 
 	private void initInputPanel() {
@@ -73,8 +77,8 @@ public class City extends MapObject {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int number = getIntegerInput("How many do you want to make?");
-				if (number != 0 ) {
-					create(new Soldier(null), number);
+				if (number != 0) {
+					create(new Soldier(null, getLocation()), number);
 				}	
 			}
 		});
@@ -84,7 +88,7 @@ public class City extends MapObject {
 			public void actionPerformed(ActionEvent e) {
 				int number = getIntegerInput("How many do you want to make?");
 				if (number != 0 ) {
-					create(new Knight(null), number);
+					create(new Knight(null, getLocation()), number);
 				}
 			}
 		});
@@ -95,10 +99,9 @@ public class City extends MapObject {
 				Warrior w = chooseWarrior();
 				if (!w.getClass().equals(DefaultWarrior.class)) {
 					int number = getIntegerInput("How many warriors do you want to leave?");
-					if (number != 0 ) {
+					if (number > 0) {
 						leaveWarriors(w, number);
 					}
-
 				}
 			}
 		});
@@ -128,7 +131,7 @@ public class City extends MapObject {
 					realCheckOut.add(possibleCheckOut.remove(0));
 				}
 				for (Warrior w : realCheckOut) {
-					this.warriors.remove(w);
+					leaveTown(w);
 				}
 				Output.println("so many " + realCheckOut.get(0).toString() + "s have left town: " + realCheckOut.size());
 				realCheckOut.clear();
@@ -136,8 +139,18 @@ public class City extends MapObject {
 		
 	}
 
+	private void leaveTown(Warrior w) {
+		map.activeateMouseListener(false);
+		this.warriors.remove(w);
+		w.setLocation(spawnLocation);
+		player.addMapObject(w);
+		w.addMouseTouchListener(map, GGMouse.lClick);
+		map.addActor(w, w.getLocation());
+		map.activeateMouseListener(true);
+	}
+
 	protected Warrior chooseWarrior() {
-		Object[] warriors = {new Soldier(null), new Knight(null)};
+		Object[] warriors = {new Soldier(null, null), new Knight(null, null)};
 		int input = JOptionPane.showOptionDialog(null, "what kind of warriors want you to leave the city?", "Leave Warriors",
 				JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, warriors, null);
 		if (input == JOptionPane.CLOSED_OPTION) {
@@ -211,14 +224,6 @@ public class City extends MapObject {
 		return true;
 	}
 
-	@Override
-	public String getInfo() {
-		String info = "Cities are the base of your empire. Every City is able to store your Money and Food "
-				+ "as well as build and train new Warriors. You can connect Cities with trading routes, so they are able to share "
-				+ "Money and Food stored there. You can also store as many warriors as you like in a city without them needing Food ";
-		return info;
-	}
-
 	public void checkTradingConnection(ArrayList<Location> existingTradingRoutes, ArrayList<City> allCities) {
 		ArrayList<Location> uncheckedTradingRoutes = new ArrayList<Location>(existingTradingRoutes);
 		ArrayList<Location> cityNeighbours = this.location.getNeighbourLocations(0.5);
@@ -228,19 +233,24 @@ public class City extends MapObject {
 				int oldNetworkSize = this.connectedCities.size();
 				findPathFrom(loc, uncheckedTradingRoutes, allCities);
 				int difference = this.connectedCities.size() - oldNetworkSize;
-				ArrayList<City> newAdded = new ArrayList<City>();
-				if (difference > 0) {
-					newAdded.addAll(connectedCities.subList(connectedCities.size()-difference, connectedCities.size()));
-					StringBuffer sb = new StringBuffer();
-					sb.append("You successfully connected " );
-					for (City c : newAdded) {
-						sb.append(c.toString() + ", ");
-					}
-					sb.delete(sb.length()-2, sb.length());
-					Output.println(sb.toString());
-				}
+				printConnection(difference);
 			}
 		}
+	}
+
+	private void printConnection(int difference) {
+		ArrayList<City> newAdded = new ArrayList<City>();
+		if (difference > 0) {
+			newAdded.addAll(connectedCities.subList(connectedCities.size()-difference, connectedCities.size()));
+			StringBuffer sb = new StringBuffer();
+			sb.append("You successfully connected " );
+			for (City c : newAdded) {
+				sb.append(c.toString() + ", ");
+			}
+			sb.delete(sb.length()-2, sb.length());
+			Output.println(sb.toString());
+		}
+		
 	}
 
 	private void findPathFrom(Location loc, ArrayList<Location> uncheckedTradingRoutes, ArrayList<City> playerCities) {

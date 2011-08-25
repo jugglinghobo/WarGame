@@ -21,15 +21,15 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 		super(39, 53, 15, Color.LIGHT_GRAY, "sprites/map2_2.jpg", false, true);
 		this.bg = getBg();
 		initializeCities();
-		this.addMouseListener(this, GGMouse.lDrag | GGMouse.rClick | GGMouse.rDrag);
+		this.activeateMouseListener(true);
 	}
 
 	private void initializeCities() {
-		this.cities.add(new City("Bern", new Location(20, 20)));
-		this.cities.add(new City("Basel", new Location(10, 10)));
-		this.cities.add(new City("Winti", new Location(30, 30)));
-		this.cities.add(new City("ZŸrich", new Location(10, 20)));
-		this.cities.add(new City("Biel", new Location(15, 25)));
+		this.cities.add(new City(this, "Bern", new Location(20, 20)));
+		this.cities.add(new City(this, "Basel", new Location(10, 10)));
+		this.cities.add(new City(this, "Winti", new Location(30, 30)));
+		this.cities.add(new City(this, "ZŸrich", new Location(10, 20)));
+		this.cities.add(new City(this, "Biel", new Location(15, 25)));
 		for (City c : cities) {
 			c.addMouseTouchListener(this, GGMouse.lClick, true);
 			this.addActor(c, c.getLocation());
@@ -42,7 +42,7 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 		Location clickLoc = toLocationInGrid(mouse.getX(), mouse.getY());
 		// add colored Squares with LMouse
 		if (mouse.getEvent() == GGMouse.lClick || mouse.getEvent() == GGMouse.lDrag) {
-			if (!coloredLocs.contains(clickLoc) && isEmptyToDraw(clickLoc)) {
+			if (isEmptyToDraw(clickLoc) && !coloredLocs.contains(clickLoc)) {
 				bg.fillCell(clickLoc, activePlayer.getColor(), false);
 				coloredLocs.add(clickLoc);
 			}
@@ -60,8 +60,7 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 	}
 	
 	private boolean isEmptyToDraw(Location clickLoc) {
-		ArrayList<Actor> actorsAtLoc = new ArrayList<Actor>();
-		actorsAtLoc = getActorsAt(clickLoc);
+		ArrayList<Actor> actorsAtLoc = getActorsAt(clickLoc);
 		if (actorsAtLoc.isEmpty()) {
 			return true;
 		}
@@ -106,7 +105,7 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 						a.show();
 					}
 				} else {
-					removeMouseListener(this);
+					this.activeateMouseListener(false);
 					MapObject newObject = mapObj.copy();
 					newObject.setLocation(loc);
 					activePlayer.addMapObject(newObject);
@@ -115,7 +114,7 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 					}
 					newObject.addMouseTouchListener(this, GGMouse.lClick, true);
 					this.addActor(newObject, newObject.getLocation());
-					this.addMouseListener(this, GGMouse.lClick | GGMouse.lDrag | GGMouse.rClick | GGMouse.rDrag);
+					this.activeateMouseListener(true);
 				}
 			}
 			Output.println("you just created " + coloredLocs.size() + " new " + mapObj.toString());
@@ -124,7 +123,7 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 	}
 
 	public void buildTradingRoute() {
-		build(new TradingRoute());
+		build(new TradingRoute(null));
 		ArrayList<Location> existingTradingRoutes = new ArrayList<Location>(activePlayer.getTradingRoutes());
 		checkTradingConnection(existingTradingRoutes);
 		
@@ -154,10 +153,20 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 	}
 
 	public void prepareFor(Player activePlayer) {
+		coloredLocs.clear();
 		setActivePlayer(activePlayer);
 		for (MapObject mapObj : activePlayer.getMapObjects()) {
 			mapObj.show();
 		}
 		refresh();
+	}
+
+	public void activeateMouseListener(boolean bool) {
+		if (bool) {
+			this.addMouseListener(this, GGMouse.lClick | GGMouse.lDrag | GGMouse.rClick | GGMouse.rDrag);
+		} else {
+			removeMouseListener(this);
+		}
+		
 	}
 }

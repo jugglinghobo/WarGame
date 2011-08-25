@@ -1,5 +1,9 @@
 package warGame;
 
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
+import ch.aplu.jgamegrid.Location;
 import warGame.City.Building;
 
 public class Soldier extends Warrior {
@@ -8,10 +12,10 @@ public class Soldier extends Warrior {
 	private int HP = 1;
 	private int AP = 1;
 	private int movement = 4;
-	private String type = "SOLDIER";
 	
-	public Soldier(Player player) {
-		super(player);
+	public Soldier(Player player, Location loc) {
+		super("sprites/soldier.png", loc);
+		this.location = loc;
 	}
 
 	@Override
@@ -35,13 +39,8 @@ public class Soldier extends Warrior {
 	}
 
 	@Override
-	public String getType() {
-		return this.type;
-	}
-
-	@Override
 	public Warrior copy() {
-		return new Soldier(player);
+		return new Soldier(player, this.location);
 	}
 
 	@Override
@@ -50,10 +49,14 @@ public class Soldier extends Warrior {
 	}
 
 	@Override
-	public String getInfo() {
-		String info = "Soldier:\nPrice: 5/3\nHP: 1\nAP: 1\nMov: 4\nSoldiers are infantry troops. " +
-				"A single Soldier might not be very strong, but Soldiers gain their strength from their mass. " +
-				"Never underestimate the chaos and destruction a batallion of Soldiers is capable of!";
-		return info;
+	public String toString() {
+		return "SOLDIER";
+	}
+
+	@Override
+	public void initInputPanel() {
+		inputPanel = new JPanel();
+		inputPanel.add(new JButton("FFOOOLLSS!!!!"));
+		Output.println("woo");
 	}
 }

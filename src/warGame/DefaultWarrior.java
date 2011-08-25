@@ -1,11 +1,14 @@
 package warGame;
 
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
 import warGame.City.Building;
 
 public class DefaultWarrior extends Warrior {
 
 	public DefaultWarrior() {
-		super(new Player("null"));
+		super(null, null);
 	}
 
 	@Override
@@ -29,11 +32,6 @@ public class DefaultWarrior extends Warrior {
 	}
 
 	@Override
-	public String getType() {
-		return null;
-	}
-
-	@Override
 	public Warrior copy() {
 		return null;
 	}
@@ -44,8 +42,15 @@ public class DefaultWarrior extends Warrior {
 	}
 
 	@Override
-	public String getInfo() {
+	public String toString() {
 		return null;
+	}
+
+	@Override
+	public void initInputPanel() {
+		inputPanel = new JPanel();
+		inputPanel.add(new JButton("FFOOOLLSS!!!!"));
+		Output.println("woo");
 	}
 
 }

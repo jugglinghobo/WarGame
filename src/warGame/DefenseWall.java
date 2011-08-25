@@ -5,14 +5,15 @@ import ch.aplu.jgamegrid.Location;
 public class DefenseWall extends MapObject {
 
 
-	public DefenseWall() {
-		super("sprites/wall.png");
+	public DefenseWall(Location location) {
+		super("sprites/wall.png", location);
+		this.location = location;
 		this.price = 6;
 	}
 
 	@Override
 	public MapObject copy() {
-		return new DefenseWall();
+		return new DefenseWall(this.location);
 	}
 
 	@Override
@@ -23,11 +24,4 @@ public class DefenseWall extends MapObject {
 	public String toString() {
 		return "DefenseWall";
 	}
-
-	@Override
-	public String getInfo() {
-		String info = "Defense Walls are useful to stop enemies on their March against your Cities.";
-		return info;
-	}
-
 }

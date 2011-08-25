@@ -21,8 +21,9 @@ public abstract class MapObject extends Actor{
 	int HP;
 	JPanel inputPanel;
 	
-	public MapObject(String imgPath) {
+	public MapObject(String imgPath, Location loc) {
 		super(imgPath);
+		this.location = loc;
 		this.HP = 1;
 		initInputPanel();
 		show();
@@ -50,7 +51,7 @@ public abstract class MapObject extends Actor{
 	}
 	
 	public void setLocation(Location loc) {
-		this.location = loc;
+		location = loc;
 	}
 	
 	public abstract Location getLocation();
@@ -60,8 +61,6 @@ public abstract class MapObject extends Actor{
 	}
 	
 	public abstract MapObject copy();
-	
-	public abstract String getInfo();
 	
 	public abstract String toString();
 

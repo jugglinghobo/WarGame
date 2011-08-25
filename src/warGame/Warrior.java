@@ -1,41 +1,42 @@
 package warGame;
 
+import javax.swing.JButton;
+import javax.swing.JPanel;
+
+import ch.aplu.jgamegrid.Location;
 import warGame.City.Building;
 
-public abstract class Warrior {
+public abstract class Warrior extends MapObject{
 	
-	protected Player player;
-	protected String type;
-	protected int price;
-	protected int HP;
-	protected int AP;
-	protected int movement;
-	
-	public Warrior(Player player) {
-		this.player = player;
+	Location location;
+
+	public Warrior(String imgPath, Location location) {
+		super(imgPath, location);
+		super.location = location;
+		initInputPanel();
 	}
 	
-	public abstract int getPrice();
+	public void initInputPanel() {
+		inputPanel = new JPanel();
+		inputPanel.add(new JButton("FFOOOLLSS!!!!"));
+	}
+
+	@Override
+	public Location getLocation() {
+		return super.location;
+	}
+
+	@Override
+	public abstract Warrior copy();
+
+	@Override
+	public abstract String toString();
+
+	public abstract Building requiredBuilding();
+
+	public abstract int getMovement();
+
+	public abstract int getAP() ;
 	
 	public abstract int getHP();
-	
-	public abstract int getAP();
-	
-	public abstract int getMovement();
-	
-	public abstract String getType();
-	
-	public abstract Warrior copy(); 
-	
-	public abstract Building requiredBuilding();
-	
-	public abstract String getInfo();
-	
-	public Player getPlayer() {
-		return this.player;
-	}
-	
-	public String toString() {
-		return getType();
-	}
 }

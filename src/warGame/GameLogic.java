@@ -40,14 +40,14 @@ public class GameLogic{
 		defWallButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				map.build(new DefenseWall());
+				map.build(new DefenseWall(null));
 			}
 		});
 		JButton farmLandButton = new JButton(new ImageIcon("sprites/farmingLand.png"));
 		farmLandButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				map.build(new FarmingLand());
+				map.build(new FarmingLand(null));
 			}
 		});
 		JButton tradingRouteButton = new JButton(new ImageIcon("sprites/tradingRoute.png"));
