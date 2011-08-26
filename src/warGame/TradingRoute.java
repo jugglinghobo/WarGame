@@ -8,6 +8,7 @@ public class TradingRoute extends MapObject {
 		super("sprites/tradingRoute.png", location);
 		this.price = 4;
 		this.location = location;
+		name = "Trading Route";
 	}
 
 	@Override
@@ -19,10 +20,4 @@ public class TradingRoute extends MapObject {
 	public MapObject copy() {
 		return new TradingRoute(this.location);
 	}
-
-	@Override
-	public String toString() {
-		return "Trading Route";
-	}
-
 }

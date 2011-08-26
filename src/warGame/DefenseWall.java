@@ -9,6 +9,7 @@ public class DefenseWall extends MapObject {
 		super("sprites/wall.png", location);
 		this.location = location;
 		this.price = 6;
+		name = "Defense Wall";
 	}
 
 	@Override
@@ -19,9 +20,5 @@ public class DefenseWall extends MapObject {
 	@Override
 	public Location getLocation() {
 		return this.location;
-	}
-	
-	public String toString() {
-		return "DefenseWall";
 	}
 }

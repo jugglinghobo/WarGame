@@ -9,6 +9,7 @@ public class FarmingLand extends MapObject {
 		super("sprites/farmingLand.png", location);
 		this.location = location;
 		this.price = 4;
+		name = "Farming Land";
 	}
 
 	public Location getLocation() {
@@ -18,9 +19,5 @@ public class FarmingLand extends MapObject {
 	@Override
 	public MapObject copy() {
 		return new FarmingLand(this.location);
-	}
-	
-	public String toString() {
-		return "Farming Land";
 	}
 }

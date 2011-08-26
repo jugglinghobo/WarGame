@@ -1,9 +1,5 @@
 package warGame;
 
-import javax.swing.JButton;
-import javax.swing.JPanel;
-
-import ch.aplu.jgamegrid.Location;
 import warGame.City.Building;
 
 public class Soldier extends Warrior {
@@ -13,9 +9,11 @@ public class Soldier extends Warrior {
 	private int AP = 1;
 	private int movement = 4;
 	
-	public Soldier(Player player, Location loc) {
-		super("sprites/soldier.png", loc);
-		this.location = loc;
+	public Soldier(Player player, City city) {
+		super("sprites/soldier.png", city);
+		name = "Soldier";
+		this.player = player;
+		this.city = city;
 	}
 
 	@Override
@@ -40,23 +38,11 @@ public class Soldier extends Warrior {
 
 	@Override
 	public Warrior copy() {
-		return new Soldier(player, this.location);
+		return new Soldier(player, this.city);
 	}
 
 	@Override
 	public Building requiredBuilding() {
 		return Building.CASERN;
-	}
-
-	@Override
-	public String toString() {
-		return "SOLDIER";
-	}
-
-	@Override
-	public void initInputPanel() {
-		inputPanel = new JPanel();
-		inputPanel.add(new JButton("FFOOOLLSS!!!!"));
-		Output.println("woo");
 	}
 }

@@ -1,6 +1,5 @@
 package warGame;
 
-import ch.aplu.jgamegrid.Location;
 import warGame.City.Building;
 
 public class Knight extends Warrior {
@@ -10,9 +9,11 @@ public class Knight extends Warrior {
 	private int AP = 3;
 	private int movement = 10;
 	
-	public Knight(Player player, Location loc) {
-		super("sprites/knight.png", loc);
-//		this.location = loc;
+	public Knight(Player player, City city) {
+		super("sprites/knight.png", city);
+		name = "Knight";
+		this.player = player;
+		this.city = city;
 	}
 
 	@Override
@@ -37,16 +38,11 @@ public class Knight extends Warrior {
 
 	@Override
 	public Warrior copy() {
-		return new Knight(getPlayer(), location);
+		return new Knight(getPlayer(), this.city);
 	}
 
 	@Override
 	public Building requiredBuilding() {
 		return Building.FORGE;
-	}
-
-	@Override
-	public String toString() {
-		return "WARRIOR";
 	}
 }

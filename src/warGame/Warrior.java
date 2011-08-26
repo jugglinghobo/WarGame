@@ -1,5 +1,8 @@
 package warGame;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
@@ -8,17 +11,29 @@ import warGame.City.Building;
 
 public abstract class Warrior extends MapObject{
 	
-	Location location;
+	City city;
 
-	public Warrior(String imgPath, Location location) {
-		super(imgPath, location);
-		super.location = location;
+	public Warrior(String imgPath, City city) {
+		super(imgPath, city.getLocation());
+		location = city.getLocation();
 		initInputPanel();
 	}
 	
 	public void initInputPanel() {
 		inputPanel = new JPanel();
-		inputPanel.add(new JButton("FFOOOLLSS!!!!"));
+		initButtons();
+	}
+
+	private void initButtons() {
+		JButton moveWarriorButton = new JButton("move");
+		moveWarriorButton.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		inputPanel.add(moveWarriorButton);
 	}
 
 	@Override
@@ -29,14 +44,11 @@ public abstract class Warrior extends MapObject{
 	@Override
 	public abstract Warrior copy();
 
-	@Override
-	public abstract String toString();
-
 	public abstract Building requiredBuilding();
 
 	public abstract int getMovement();
 
-	public abstract int getAP() ;
+	public abstract int getAP();
 	
 	public abstract int getHP();
 }

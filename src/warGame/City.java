@@ -38,13 +38,13 @@ public class City extends MapObject {
 	private Map map;
 	private Location spawnLocation;
 
-	public City(Map map, String name, Location location) {
-		super("sprites/city.png", location);
+	public City(Map map, String name, Location loc) {
+		super("sprites/city.png", loc);
 		this.map = map;
 		this.name = name;
 		this.HP = 5;
 		initInputPanel();
-		setLocation(location);
+		location = loc;
 		this.spawnLocation = new Location(this.location.x, this.location.y-1);
 	}
 
@@ -78,7 +78,7 @@ public class City extends MapObject {
 			public void actionPerformed(ActionEvent e) {
 				int number = getIntegerInput("How many do you want to make?");
 				if (number != 0) {
-					create(new Soldier(null, getLocation()), number);
+					create(new Soldier(getPlayer(), getCity()), number);
 				}	
 			}
 		});
@@ -87,8 +87,8 @@ public class City extends MapObject {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				int number = getIntegerInput("How many do you want to make?");
-				if (number != 0 ) {
-					create(new Knight(null, getLocation()), number);
+				if (number != 0) {
+					create(new Knight(getPlayer(), getCity()), number);
 				}
 			}
 		});
@@ -97,7 +97,7 @@ public class City extends MapObject {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				Warrior w = chooseWarrior();
-				if (!w.getClass().equals(DefaultWarrior.class)) {
+				if (w != null) {
 					int number = getIntegerInput("How many warriors do you want to leave?");
 					if (number > 0) {
 						leaveWarriors(w, number);
@@ -114,6 +114,10 @@ public class City extends MapObject {
 	}
 
 	
+	protected City getCity() {
+		return this;
+	}
+
 	protected void leaveWarriors(Warrior warrior, int number) {
 		ArrayList<Warrior> warriors = new ArrayList<Warrior>(this.warriors);
 		ArrayList<Warrior> possibleCheckOut = new ArrayList<Warrior>();
@@ -124,7 +128,7 @@ public class City extends MapObject {
 				}
 			}
 			if (possibleCheckOut.size() < number) {
-				Output.println("you want to leave " + number + " but have only " + possibleCheckOut.size() + warrior.toString());
+				Output.println("you want to leave " + number + " but have only " + possibleCheckOut.size() +" " + warrior.toString());
 				realCheckOut.clear();
 			} else {
 				for (int i = 0; i < number; i++) {
@@ -150,11 +154,11 @@ public class City extends MapObject {
 	}
 
 	protected Warrior chooseWarrior() {
-		Object[] warriors = {new Soldier(null, null), new Knight(null, null)};
+		Object[] warriors = {new Soldier(player, this), new Knight(player, this)};
 		int input = JOptionPane.showOptionDialog(null, "what kind of warriors want you to leave the city?", "Leave Warriors",
 				JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, warriors, null);
 		if (input == JOptionPane.CLOSED_OPTION) {
-			return new DefaultWarrior();
+			return null;
 		}
 		return (Warrior) warriors[input];
 	}
@@ -212,7 +216,7 @@ public class City extends MapObject {
 
 	@Override
 	public Location getLocation() {
-		return this.location;
+		return location;
 	}
 
 	public String toString() {

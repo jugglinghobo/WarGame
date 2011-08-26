@@ -20,6 +20,7 @@ public abstract class MapObject extends Actor{
 	int price;
 	int HP;
 	JPanel inputPanel;
+	String name;
 	
 	public MapObject(String imgPath, Location loc) {
 		super(imgPath);
@@ -31,7 +32,7 @@ public abstract class MapObject extends Actor{
 	
 	private void initInputPanel() {
 		inputPanel = new JPanel();
-		JButton destroyButton = new JButton("DESTROY");
+		JButton destroyButton = new JButton("Destroy");
 		destroyButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -62,7 +63,9 @@ public abstract class MapObject extends Actor{
 	
 	public abstract MapObject copy();
 	
-	public abstract String toString();
+	public String toString() {
+		return this.name;
+	}
 
 	public int getPrice() {
 		return this.price;
