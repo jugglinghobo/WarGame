@@ -96,46 +96,6 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 		return this.cities;
 	}
 
-	public void build(MapObject mapObj) {
-		if (activePlayer.canPay(coloredLocs.size() * mapObj.getPrice())) {
-			for (Location loc : coloredLocs) {
-				ArrayList<Actor> actors = getActorsAt(loc);
-				if (!actors.isEmpty()) {
-					for (Actor a : actors) {
-						a.show();
-					}
-				} else {
-					this.activeateMouseListener(false);
-					MapObject newObject = mapObj.copy();
-					newObject.setLocation(loc);
-					activePlayer.addMapObject(newObject);
-					if (mapObj.getClass().equals(TradingRoute.class)) {
-						activePlayer.addTradingRoute(loc);
-					}
-					newObject.addMouseTouchListener(this, GGMouse.lClick, true);
-					this.addActor(newObject, newObject.getLocation());
-					this.activeateMouseListener(true);
-				}
-			}
-			Output.println("you just created " + coloredLocs.size() + " new " + mapObj.toString());
-			clearMap();
-		}
-	}
-
-	public void buildTradingRoute() {
-		build(new TradingRoute(null));
-		ArrayList<Location> existingTradingRoutes = new ArrayList<Location>(activePlayer.getTradingRoutes());
-		checkTradingConnection(existingTradingRoutes);
-		
-	}
-
-	private void checkTradingConnection(ArrayList<Location> existingTradingRoutes) {
-		ArrayList<City> cities = new ArrayList<City>(activePlayer.getCities());
-		for (City c : cities) {
-			c.checkTradingConnection(existingTradingRoutes, cities);
-		}
-	}
-
 	public void clearMap() {
 		coloredLocs.clear();
 		bg.clear();
@@ -168,5 +128,9 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 			removeMouseListener(this);
 		}
 		
+	}
+
+	public ArrayList<Location> getColoredLocs() {
+		return this.coloredLocs;
 	}
 }

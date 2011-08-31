@@ -18,7 +18,7 @@ public class GUI {
 
 	public GUI(GameLogic gameLogic) {
 		Output.setOutput(new GuiOutput(this));
-		Input.setInput(new GuiInput(this));
+//		Input.setInput(new GuiInput(this));
 		this.gameLogic = gameLogic;
 		initFrame();
 		gameLogic.init();
@@ -52,7 +52,6 @@ public class GUI {
 		interactionPanel.setLayout(new GridLayout(4, 1, 5, 5));
 		initOutputPanel();
 		initMapObjectPanel();
-		initMapActionPanel();
 		frame.add(interactionPanel, BorderLayout.LINE_START);
 	}
 	
@@ -77,12 +76,6 @@ public class GUI {
 		this.inputPanel = new JPanel();
 		inputPanel.setLayout(new BorderLayout(5, 5));
 		mapObjectPanel.add(inputPanel, BorderLayout.SOUTH);
-	}
-	
-	
-	private void initMapActionPanel() {
-		JPanel mapActionPanel = gameLogic.getMapActionPanel();
-		interactionPanel.add(mapActionPanel);
 	}
 	
 

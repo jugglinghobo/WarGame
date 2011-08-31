@@ -1,10 +1,8 @@
 package warGame;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import javax.swing.*;
+import javax.swing.JOptionPane;
 
 import ch.aplu.jgamegrid.*;
 
@@ -31,6 +29,7 @@ public class City extends MapObject {
 		}
 	}
 
+	private int money;
 	private String name;
 	private ArrayList<Building> buildings = new ArrayList<Building>();
 	private ArrayList<Warrior> warriors = new ArrayList<Warrior>();
@@ -43,81 +42,17 @@ public class City extends MapObject {
 		this.map = map;
 		this.name = name;
 		this.HP = 5;
+		this.money = 20000;
 		initInputPanel();
 		location = loc;
 		this.spawnLocation = new Location(this.location.x, this.location.y-1);
 	}
 
 	private void initInputPanel() {
-		inputPanel = new JPanel();
-		initButtons();
-
+		inputPanel = new CityActionPanel(this).getPanel();
 	}
-
-	private void initButtons() {
-		/*
-		 * needs: - Casern - Forge - Soldier - Knight - leave Warriors
-		 */
-		JButton casernButton = new JButton("Casern");
-		casernButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				build(Building.CASERN);
-			}
-		});
-		JButton forgeButton = new JButton("Forge");
-		forgeButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				build(Building.FORGE);
-			}
-		});
-		JButton soldierButton = new JButton("Soldier");
-		soldierButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int number = getIntegerInput("How many do you want to make?");
-				if (number != 0) {
-					create(new Soldier(getPlayer(), getCity()), number);
-				}	
-			}
-		});
-		JButton knightButton = new JButton("Knight");
-		knightButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				int number = getIntegerInput("How many do you want to make?");
-				if (number != 0) {
-					create(new Knight(getPlayer(), getCity()), number);
-				}
-			}
-		});
-		JButton leaveWarriorButton = new JButton("leave Warriors");
-		leaveWarriorButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				Warrior w = chooseWarrior();
-				if (w != null) {
-					int number = getIntegerInput("How many warriors do you want to leave?");
-					if (number > 0) {
-						leaveWarriors(w, number);
-					}
-				}
-			}
-		});
-
-		inputPanel.add(casernButton);
-		inputPanel.add(forgeButton);
-		inputPanel.add(soldierButton);
-		inputPanel.add(knightButton);
-		inputPanel.add(leaveWarriorButton);
-	}
-
 	
-	protected City getCity() {
-		return this;
-	}
-
+	
 	protected void leaveWarriors(Warrior warrior, int number) {
 		ArrayList<Warrior> warriors = new ArrayList<Warrior>(this.warriors);
 		ArrayList<Warrior> possibleCheckOut = new ArrayList<Warrior>();
@@ -140,7 +75,6 @@ public class City extends MapObject {
 				Output.println("so many " + realCheckOut.get(0).toString() + "s have left town: " + realCheckOut.size());
 				realCheckOut.clear();
 			}
-		
 	}
 
 	private void leaveTown(Warrior w) {
@@ -153,45 +87,58 @@ public class City extends MapObject {
 		map.activeateMouseListener(true);
 	}
 
-	protected Warrior chooseWarrior() {
-		Object[] warriors = {new Soldier(player, this), new Knight(player, this)};
-		int input = JOptionPane.showOptionDialog(null, "what kind of warriors want you to leave the city?", "Leave Warriors",
-				JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, warriors, null);
-		if (input == JOptionPane.CLOSED_OPTION) {
-			return null;
-		}
-		return (Warrior) warriors[input];
-	}
-
-	private int getIntegerInput(String question) {
-		String answer = "";
-		boolean ok = false;
-		while (!ok) {
-			answer = JOptionPane.showInputDialog(question);
-			if (answer == null) {
-				return 0;
-			}
-			try {
-				Integer.parseInt(answer);
-				ok = true;
-			} catch (NumberFormatException e) {
-				Output.println("Please enter a number");
-			}
-		}
-		return Integer.parseInt(answer);
-	}
-
-	public void build(Building building) {
-		if (player.canPay(building.getPrice())) {
+	public void buildBuilding(Building building) {
+		if (canPay(building.getPrice())) {
 			this.buildings.add(building);
 			Output.println("you just built a brand new " + building.toString());
+		}
+	}
+	
+	public void build(MapObject mapObj) {
+		ArrayList<Location> coloredLocs = map.getColoredLocs();
+		if (canPay(coloredLocs.size() * mapObj.getPrice())) {
+			for (Location loc : coloredLocs) {
+				ArrayList<Actor> actors = map.getActorsAt(loc);
+				if (!actors.isEmpty()) {
+					for (Actor a : actors) {
+						a.show();
+					}
+				} else {
+					map.activeateMouseListener(false);
+					MapObject newObject = mapObj.copy();
+					newObject.setLocation(loc);
+					player.addMapObject(newObject);
+					if (mapObj.getClass().equals(TradingRoute.class)) {
+						player.addTradingRoute(loc);
+					}
+					newObject.addMouseTouchListener(map, GGMouse.lClick, true);
+					map.addActor(newObject, newObject.getLocation());
+					map.activeateMouseListener(true);
+				}
+			}
+			Output.println("you just created " + coloredLocs.size() + " new " + mapObj.toString());
+			map.clearMap();
+		}
+	}
+	
+	public void buildTradingRoute() {
+		build(new TradingRoute(null));
+		ArrayList<Location> existingTradingRoutes = new ArrayList<Location>(player.getTradingRoutes());
+		checkTradingConnection(existingTradingRoutes);
+		
+	}
+
+	private void checkTradingConnection(ArrayList<Location> existingTradingRoutes) {
+		ArrayList<City> cities = new ArrayList<City>(player.getCities());
+		for (City c : cities) {
+			c.checkTradingConnection(existingTradingRoutes, cities);
 		}
 	}
 
 	public void create(Warrior warrior, int number) {
 		if (number > 0) {
 			if (this.buildings.contains(warrior.requiredBuilding())) {
-				if (player.canPay(number * warrior.getPrice())) {
+				if (canPay(number * warrior.getPrice())) {
 					for (int i = 0; i < number; i++) {
 						Warrior newWarrior = warrior.copy();
 						this.warriors.add(newWarrior);
@@ -205,27 +152,6 @@ public class City extends MapObject {
 						+ " first!");
 			}
 		}
-	}
-	
-	
-	// should never be called!
-	@Override
-	public MapObject copy() {
-		return null;
-	}
-
-	@Override
-	public Location getLocation() {
-		return location;
-	}
-
-	public String toString() {
-		return this.name.toUpperCase();
-	}
-
-	@Override
-	public boolean isAlwaysVisible() {
-		return true;
 	}
 
 	public void checkTradingConnection(ArrayList<Location> existingTradingRoutes, ArrayList<City> allCities) {
@@ -254,7 +180,6 @@ public class City extends MapObject {
 			sb.delete(sb.length()-2, sb.length());
 			Output.println(sb.toString());
 		}
-		
 	}
 
 	private void findPathFrom(Location loc, ArrayList<Location> uncheckedTradingRoutes, ArrayList<City> playerCities) {
@@ -273,9 +198,50 @@ public class City extends MapObject {
 		}
 		
 	}
+	
+	public boolean canPay(int price) {
+		int option = JOptionPane.showConfirmDialog(null, "This will cost you " + price + " money", null, JOptionPane.YES_NO_OPTION,
+				JOptionPane.PLAIN_MESSAGE, null);
+		if (option == JOptionPane.OK_OPTION) {
+			if (money - price >= 0) {
+				money -= price;
+				Output.updateStats();
+				return true;
+			} else {
+			Output.println("You have not enough Money");
+			return false;
+			}
+		} else {
+			return false;
+		}
+	}
 
 	public ArrayList<City> getConnectedCities() {
 		return this.connectedCities;
+	}
+
+	public Map getMap() {
+		return this.map;
+	}
+	
+	// should never be called!
+	@Override
+	public MapObject copy() {
+		return null;
+	}
+
+	@Override
+	public Location getLocation() {
+		return location;
+	}
+
+	public String toString() {
+		return this.name.toUpperCase();
+	}
+
+	@Override
+	public boolean isAlwaysVisible() {
+		return true;
 	}
 	
 }

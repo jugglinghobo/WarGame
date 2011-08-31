@@ -36,38 +36,38 @@ public class GameLogic{
 
 	private void initMapActionPanel() {
 		this.mapActionPanel = new JPanel();
-		JButton defWallButton = new JButton(new ImageIcon("sprites/wall.png"));
-		defWallButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				map.build(new DefenseWall(null));
-			}
-		});
-		JButton farmLandButton = new JButton(new ImageIcon("sprites/farmingLand.png"));
-		farmLandButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				map.build(new FarmingLand(null));
-			}
-		});
-		JButton tradingRouteButton = new JButton(new ImageIcon("sprites/tradingRoute.png"));
-		tradingRouteButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				map.buildTradingRoute();
-			}
-		});
-		JButton clearMapButton = new JButton(new ImageIcon("sprites/mapIcon.png"));
-		clearMapButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				map.clearMap();
-			}
-		});
-		mapActionPanel.add(defWallButton);
-		mapActionPanel.add(farmLandButton);
-		mapActionPanel.add(tradingRouteButton);
-		mapActionPanel.add(clearMapButton);
+//		JButton defWallButton = new JButton(new ImageIcon("sprites/wall.png"));
+//		defWallButton.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent arg0) {
+//				map.build(new DefenseWall(null));
+//			}
+//		});
+//		JButton farmLandButton = new JButton(new ImageIcon("sprites/farmingLand.png"));
+//		farmLandButton.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				map.build(new FarmingLand(null));
+//			}
+//		});
+//		JButton tradingRouteButton = new JButton(new ImageIcon("sprites/tradingRoute.png"));
+//		tradingRouteButton.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				map.buildTradingRoute();
+//			}
+//		});
+//		JButton clearMapButton = new JButton(new ImageIcon("sprites/mapIcon.png"));
+//		clearMapButton.addActionListener(new ActionListener() {
+//			@Override
+//			public void actionPerformed(ActionEvent e) {
+//				map.clearMap();
+//			}
+//		});
+//		mapActionPanel.add(defWallButton);
+//		mapActionPanel.add(farmLandButton);
+//		mapActionPanel.add(tradingRouteButton);
+//		mapActionPanel.add(clearMapButton);
 	}
 
 	private void initStatsPanel() {
@@ -128,14 +128,14 @@ public class GameLogic{
 		ArrayList<String> usedNames = new ArrayList<String>();
 		int i = 1;
 		while (!done) {
-			String name = (String) getInput("Player " + i + " , please enter your name", "sprites/player.png");
+			String name = (String) Input.promptStringInput("Player " + i + " , please enter your name", "sprites/player.png");
 			if (!usedNames.contains(name)) {
 				usedNames.add(name);
 				i++;
 				this.players.add(new Player(name));
 				Output.println("Player " + name.toUpperCase() + " added");
 				if (players.size() > 1) {
-					done = !getBooleanInput("Would you like to add another Player?", "sprites/player.png");
+					done = !Input.getBooleanInput("Would you like to add another Player?", "sprites/player.png");
 				}
 			}
 		}
@@ -150,42 +150,13 @@ public class GameLogic{
 		ArrayList<City> cities = new ArrayList<City>(map.getCities());
 		while (!cities.isEmpty()) {
 			Player activePlayer = this.players.remove(0);
-			City chosenCity = chooseInput(cities, activePlayer + " , please choose a City", "sprites/city.png");
+			City chosenCity = (City) Input.promptChooseInput(cities.toArray(), activePlayer.toString() + " , please choose a City", "sprites/city.png");
 			Output.println(activePlayer + " chose " + chosenCity);
 			cities.remove(chosenCity);
 			activePlayer.addCity(chosenCity);
 			this.players.add(activePlayer);
 		}
 		Output.println("");
-	}
-	
-	
-	private Object getInput(String string, String iconPath) {
-		Object input = null;
-		while (input == null) {
-			input = JOptionPane.showInputDialog(null, string, "NEW PLAYER", JOptionPane.QUESTION_MESSAGE, new ImageIcon(iconPath), null, null);
-		}
-		return input;
-	}
-	
-	public boolean getBooleanInput(String string, String iconPath) {
-		int option = JOptionPane.showConfirmDialog(null, string, null, JOptionPane.YES_NO_OPTION,
-				JOptionPane.PLAIN_MESSAGE, new ImageIcon(iconPath));
-		if (option == JOptionPane.OK_OPTION) {
-			return true;
-		} else {
-			return false;
-		}
-	}
-	
-	private City chooseInput(ArrayList<City> cities, String string, String iconPath) {
-		Object[] cityObjects = cities.toArray();
-		int input = JOptionPane.CLOSED_OPTION;
-		while (input == JOptionPane.CLOSED_OPTION) {
-			input = JOptionPane.showOptionDialog(null, string, null, JOptionPane.OK_OPTION, 
-					JOptionPane.PLAIN_MESSAGE, new ImageIcon(iconPath), cityObjects, null);
-		}
-		return cities.get(input);
 	}
 
 	private Color getRandomColor() {

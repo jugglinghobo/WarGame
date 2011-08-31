@@ -2,8 +2,6 @@ package warGame;
 
 import java.awt.Color;
 import java.util.ArrayList;
-import javax.swing.JOptionPane;
-
 import ch.aplu.jgamegrid.Location;
 
 public class Player {
@@ -30,24 +28,6 @@ public class Player {
 
 	public String getName() {
 		return name;
-	}
-
-	public boolean canPay(int price) {
-		int option = JOptionPane.showConfirmDialog(null, "This will cost you " + price + " money", null, JOptionPane.YES_NO_OPTION,
-				JOptionPane.PLAIN_MESSAGE, null);
-		if (option == JOptionPane.OK_OPTION) {
-			if (money - price >= 0) {
-				money -= price;
-				Output.updateStats();
-				return true;
-			} else {
-			Output.println("You have not enough Money");
-			return false;
-			}
-		} else {
-			return false;
-		}
-		
 	}
 
 	public void addCity(City chosenCity) {

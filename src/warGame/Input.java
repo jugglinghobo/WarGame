@@ -1,95 +1,60 @@
 package warGame;
-import java.util.Scanner;
+
+import javax.swing.ImageIcon;
+import javax.swing.JOptionPane;
 
 
-public abstract class Input {
-	
-	private static Input instance = new StdInput();
-	
-	public static void setInput(Input i) {
-		instance = i;
-	}
-	
-	public static String nextString() {
-		return instance.getString();
-	}
-	
-	public static int nextInt() {
-		return instance.getInt();
-	}
-	
-	public abstract String getString();
-	
-	public abstract int getInt();
 
-}
-
-class StdInput extends Input {
-
-	private Scanner scan = new Scanner(System.in);
+/**
+ * This class is responsible for prompting input from the user.
+ * At the moment, this is achieved by using JOptionPanes
+ *
+ */
+public class Input {
 	
-	public String getString() {
-		return scan.nextLine();
-	}
-
-	public int getInt() {
-		@SuppressWarnings("unused") // breaks input loop
-		String unused;
-		int realInt = 0;
-		while (!scan.hasNextInt()) {
-		unused = scan.nextLine();
-		Output.println("please enter a number.");
+	public static Object promptStringInput(String string, String iconPath) {
+		Object input = null;
+		while (input == null) {
+			input = JOptionPane.showInputDialog(null, string, "NEW PLAYER", JOptionPane.QUESTION_MESSAGE, new ImageIcon(iconPath), null, null);
 		}
-		realInt = scan.nextInt();
-		unused = scan.nextLine();
-		return realInt;
+		return input;
 	}
-}
-
-class GuiInput extends Input{
-	private GUI gui;
-
-	GuiInput(GUI gui) {
-		this.gui = gui;
-	}
-
-	@Override
-	public String getString() {
-		String gotIt = "";
-		String in = gui.getInput();
-		while (in.equals("")) {
+	
+	public static int promptIntegerInput(String question) {
+		String answer = "";
+		boolean ok = false;
+		while (!ok) {
+			answer = JOptionPane.showInputDialog(question);
+			if (answer == null) {
+				return 0;
+			}
 			try {
-				Thread.sleep(250);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			in = gui.getInput();
-			if (!in.equals("")) {
-				gotIt = in;
+				Integer.parseInt(answer);
+				ok = true;
+			} catch (NumberFormatException e) {
+				Output.println("Please enter a number");
 			}
 		}
-		return gotIt;
+		return Integer.parseInt(answer);
+	}
+	
+	public static Object promptChooseInput(Object[] objects, String info, String title) {
+		int input = JOptionPane.showOptionDialog(null, info, title,
+				JOptionPane.OK_OPTION, JOptionPane.PLAIN_MESSAGE, null, objects, null);
+		if (input == JOptionPane.CLOSED_OPTION) {
+			return null;
+		}
+		return objects[input];
+	}
+	
+	public static boolean getBooleanInput(String string, String iconPath) {
+		int option = JOptionPane.showConfirmDialog(null, string, null, JOptionPane.YES_NO_OPTION,
+				JOptionPane.PLAIN_MESSAGE, new ImageIcon(iconPath));
+		if (option == JOptionPane.OK_OPTION) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
-	public int getInt() {
-		int gotIt = 0;
-		String in = gui.getInput();
-		while (in.equals("")) {
-			try {
-				Thread.sleep(250);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-			in = gui.getInput();
-			if (!in.equals("")) {
-				try {
-					gotIt = Integer.parseInt(in);
-				} catch (NumberFormatException e) {
-					Output.println("Please enter a number");
-					gotIt = getInt();
-					}
-			}
-		}
-		return gotIt;
-	}
 }
