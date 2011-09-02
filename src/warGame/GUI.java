@@ -7,18 +7,35 @@ import javax.swing.*;
 public class GUI {
 	
 	private JFrame frame;
-	private JPanel inputPanel;
 	private JTextPane outputPane;
 	private JPanel interactionPanel;
 	protected String input = "";
 	private GameLogic gameLogic;
-	private JPanel statsPanel;
-	private JPanel mapObjectPanel;
+	private JPanel actionPanel;
 	private Map map;
+	
+	
+	/*
+	 * This is the Deal:
+	 * We have one Frame
+	 * this frame contains Two things:
+	 *  - the Map
+	 *  - the Interaction Panel
+	 *  
+	 *  The interactionPanel contains two Things:
+	 *   - the Output
+	 *   - the cityActionPanel, which is by default empty and changed if the user clicks on a city.
+	 *   
+	 *   The cityActionPanel contains two Things: 
+	 *    - the City Stats
+	 *    - the city Buttons
+	 *   
+	 *   That's all!
+	 * 
+	 */
 
 	public GUI(GameLogic gameLogic) {
-		Output.setOutput(new GuiOutput(this));
-//		Input.setInput(new GuiInput(this));
+		new Output(this);
 		this.gameLogic = gameLogic;
 		initFrame();
 		gameLogic.init();
@@ -31,15 +48,9 @@ public class GUI {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout(5, 5));
 		frame.setResizable(true);
-		initStatsPanel();
 		initMapPanel();
 		initInteractionPanel();
 		frame.setVisible(true);
-	}
-	
-	private void initStatsPanel() {
-		this.statsPanel = gameLogic.getStatsPanel();
-		this.frame.add(statsPanel, BorderLayout.PAGE_START);
 	}
 
 	private void initMapPanel() {
@@ -51,8 +62,8 @@ public class GUI {
 		this.interactionPanel = new JPanel();
 		interactionPanel.setLayout(new GridLayout(4, 1, 5, 5));
 		initOutputPanel();
-		initMapObjectPanel();
-		frame.add(interactionPanel, BorderLayout.LINE_START);
+		initCityActionPanel();
+		frame.add(interactionPanel, BorderLayout.WEST);
 	}
 	
 	private void initOutputPanel() {
@@ -64,18 +75,11 @@ public class GUI {
 	}
 	
 	/*
-	 * This is the Panel in which the different MapObjects display their offers
+	 * This is the Panel in which the different Cities display their offers
 	 */
-	private void initMapObjectPanel() {
-		this.mapObjectPanel = new JPanel();
-		initInputPanel();
-		interactionPanel.add(mapObjectPanel);
-	}
-	
-	private void initInputPanel() {
-		this.inputPanel = new JPanel();
-		inputPanel.setLayout(new BorderLayout(5, 5));
-		mapObjectPanel.add(inputPanel, BorderLayout.SOUTH);
+	private void initCityActionPanel() {
+		this.actionPanel = new JPanel();
+		interactionPanel.add(actionPanel);
 	}
 	
 
@@ -90,23 +94,17 @@ public class GUI {
 		
 	}
 
-	public void setInputPanel(JPanel panel) {
-		mapObjectPanel.remove(inputPanel);
-		this.inputPanel = panel;
-		mapObjectPanel.add(this.inputPanel);
-		this.inputPanel.setVisible(true);
-		frame.validate();
-		frame.repaint();
-	}
-
-	public void updateStats() {
-		gameLogic.setStatsPanel();
+	public void setActionPanel(JPanel panel) {
+		interactionPanel.remove(actionPanel);
+		this.actionPanel = panel;
+		interactionPanel.add(this.actionPanel);
+		this.actionPanel.setVisible(true);
 		frame.validate();
 		frame.repaint();
 	}
 
 	public void resetInteractionPanel() {
-		this.inputPanel.setVisible(false);
+		this.actionPanel.setVisible(false);
 		frame.validate();
 		frame.repaint();
 		

@@ -30,7 +30,6 @@ public class City extends MapObject {
 	}
 
 	private int money;
-	private String name;
 	private ArrayList<Building> buildings = new ArrayList<Building>();
 	private ArrayList<Warrior> warriors = new ArrayList<Warrior>();
 	private ArrayList<City> connectedCities = new ArrayList<City>();
@@ -40,18 +39,17 @@ public class City extends MapObject {
 	public City(Map map, String name, Location loc) {
 		super("sprites/city.png", loc);
 		this.map = map;
-		this.name = name;
-		this.HP = 5;
+		setName(name);
+		setHP(5);
 		this.money = 20000;
-		initInputPanel();
-		location = loc;
-		this.spawnLocation = new Location(this.location.x, this.location.y-1);
+		initActionPanel();
+		setLocation(loc);
+		this.spawnLocation = new Location(getLocation().x, getLocation().y-1);
 	}
 
-	private void initInputPanel() {
-		inputPanel = new CityActionPanel(this).getPanel();
+	private void initActionPanel() {
+		setActionPanel(new CityActionPanel(this).getPanel());
 	}
-	
 	
 	protected void leaveWarriors(Warrior warrior, int number) {
 		ArrayList<Warrior> warriors = new ArrayList<Warrior>(this.warriors);
@@ -205,7 +203,7 @@ public class City extends MapObject {
 		if (option == JOptionPane.OK_OPTION) {
 			if (money - price >= 0) {
 				money -= price;
-				Output.updateStats();
+				Output.setInputPanel(actionPanel);
 				return true;
 			} else {
 			Output.println("You have not enough Money");
@@ -242,6 +240,26 @@ public class City extends MapObject {
 	@Override
 	public boolean isAlwaysVisible() {
 		return true;
+	}
+
+	public String getStats() {
+		StringBuffer sb = new StringBuffer();
+		int soldierCount = 0;
+		int knightCount = 0;
+		sb.append(this.name + "\n");
+		sb.append("Money: " + this.money + "\n");
+		for (Warrior w : this.warriors) {
+			if (w.getClass().equals(Soldier.class)) {
+				soldierCount++;
+			}
+			if (w.getClass().equals(Knight.class)) {
+				knightCount++;
+			}
+		}
+		sb.append("Soldiers: " + soldierCount + "\n");
+		sb.append("Knights: " + knightCount + "\n");
+		sb.append("Connected Cities: " + this.connectedCities);
+		return sb.toString();
 	}
 	
 }

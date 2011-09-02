@@ -7,13 +7,13 @@ public class Soldier extends Warrior {
 	private int price = 5;
 	private int HP = 1;
 	private int AP = 1;
-	private int movement = 4;
 	
 	public Soldier(Player player, City city) {
 		super("sprites/soldier.png", city);
-		name = "Soldier";
+		super.setName("Soldier");
 		this.player = player;
-		this.city = city;
+		setCity(city);
+		setMovement(4);
 	}
 
 	@Override

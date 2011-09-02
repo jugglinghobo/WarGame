@@ -115,7 +115,7 @@ public class GameLogic{
 	}
 
 	public void setStatsPanel() {
-		this.namePanel.setText(activePlayer.getName() + "    " + activePlayer.getMoney() + "$");
+		this.namePanel.setText(activePlayer + "    " + activePlayer.getMoney() + "$");
 	}
 
 	public void init() {

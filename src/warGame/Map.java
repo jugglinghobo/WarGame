@@ -8,7 +8,7 @@ import ch.aplu.jgamegrid.*;
 public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListener{
 	
 	/*
-	 * This is the Game map, which is basically a GUI that shows the Players actions in real time.
+	 * This is the Game map, which is basically a GUI that shows Player actions in real time.
 	 * The GUI will be done with help of the GameGrid Library provided by Stšfe (and other dudes from PHBern).
 	 */
 	private static final long serialVersionUID = 1L;
@@ -88,7 +88,7 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 						Output.clearPanel();
 					}
 				}
-			}
+			} break; 
 		}
 	}
 

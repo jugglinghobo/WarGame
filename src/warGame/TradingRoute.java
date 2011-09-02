@@ -8,7 +8,7 @@ public class TradingRoute extends MapObject {
 		super("sprites/tradingRoute.png", location);
 		this.price = 4;
 		this.location = location;
-		name = "Trading Route";
+		super.setName("Trading Route");
 	}
 
 	@Override

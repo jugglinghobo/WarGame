@@ -19,15 +19,11 @@ public class Player {
 	}
 	
 	public String toString() {
-		return getName();
+		return name;
 	}
 
 	public void setName(String name) {
 		this.name = name.toUpperCase();
-	}
-
-	public String getName() {
-		return name;
 	}
 
 	public void addCity(City chosenCity) {

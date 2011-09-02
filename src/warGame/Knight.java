@@ -11,7 +11,7 @@ public class Knight extends Warrior {
 	
 	public Knight(Player player, City city) {
 		super("sprites/knight.png", city);
-		name = "Knight";
+		super.setName("Knight");
 		this.player = player;
 		this.city = city;
 	}

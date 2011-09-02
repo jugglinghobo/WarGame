@@ -15,23 +15,24 @@ import ch.aplu.jgamegrid.*;
  */
 public abstract class MapObject extends Actor{
 	
-	Player player;
-	Location location;
-	int price;
-	int HP;
-	JPanel inputPanel;
-	String name;
+	protected Player player;
+	protected City city;
+	protected Location location;
+	protected int price;
+	protected int HP;
+	protected JPanel actionPanel;
+	protected String name;
 	
 	public MapObject(String imgPath, Location loc) {
 		super(imgPath);
 		this.location = loc;
 		this.HP = 1;
-		initInputPanel();
+		initActionPanel();
 		show();
 	}
 	
-	private void initInputPanel() {
-		inputPanel = new JPanel();
+	private void initActionPanel() {
+		actionPanel = new JPanel();
 		JButton destroyButton = new JButton("Destroy");
 		destroyButton.addActionListener(new ActionListener() {
 			@Override
@@ -40,7 +41,11 @@ public abstract class MapObject extends Actor{
 				Output.refreshMap();
 			}
 		});
-		inputPanel.add(destroyButton);
+		actionPanel.add(destroyButton);
+	}
+	
+	public void offerActions() {
+		Output.setInputPanel(actionPanel);
 	}
 
 	public void setPlayer(Player player) {
@@ -51,27 +56,41 @@ public abstract class MapObject extends Actor{
 		return player;
 	}
 	
-	public void setLocation(Location loc) {
-		location = loc;
-	}
-	
-	public abstract Location getLocation();
-	
-	public void offerActions() {
-		Output.setInputPanel(inputPanel);
-	}
-	
 	public abstract MapObject copy();
+	
+	public void setName(String name) {
+		this.name = name;
+	}
 	
 	public String toString() {
 		return this.name;
 	}
-
+	
 	public int getPrice() {
 		return this.price;
 	}
 
 	public boolean isAlwaysVisible() {
 		return false;
+	}
+
+	public void setCity(City city) {
+		this.city = city;
+	}
+	
+	public City getCity() {
+		return this.city;
+	}
+	
+	public void setHP(int HP) {
+		this.HP = HP;
+	}
+	
+	public int getHP() {
+		return this.HP;
+	}
+	
+	public void setActionPanel(JPanel panel) {
+		this.actionPanel = panel;
 	}
 }

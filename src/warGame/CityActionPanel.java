@@ -1,12 +1,12 @@
 package warGame;
 
-import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.JTextPane;
 
 import warGame.City.Building;
 
@@ -17,6 +17,7 @@ public class CityActionPanel extends JPanel{
 	private City city;
 	private JPanel panel;
 	private Map map;
+	private JTextPane statsArea;
 	
 	public CityActionPanel(City city) {
 		this.city = city;
@@ -30,11 +31,18 @@ public class CityActionPanel extends JPanel{
 
 	private void initPanel() {
 		this.panel = new JPanel();
+		initStats();
 		initButtons();
 		panel.setSize(300, 300);
-		panel.setBackground(Color.RED);
 	}
 	
+	private void initStats() {
+		this.statsArea = new JTextPane();
+		statsArea.setText(city.getStats());
+		
+		
+	}
+
 	private void initButtons() {
 		/*
 		 * needs: - Casern - Forge - Soldier - Knight - leave Warriors - Trading Route - Farming Land - Defense Wall
@@ -77,7 +85,7 @@ public class CityActionPanel extends JPanel{
 		leaveWarriorButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Object[] warriors = {new Soldier(city.getPlayer(), city), new Knight(city.getPlayer(), city)};
+				Object[] warriors = {new Knight(city.getPlayer(), city), new Soldier(city.getPlayer(), city)};
 				Warrior w = (Warrior) Input.promptChooseInput(warriors, "what kind of Warriors would do you want to leave?", "leave Warriors");
 				if (w != null) {
 					int number = Input.promptIntegerInput("How many warriors do you want to leave?");
