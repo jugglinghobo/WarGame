@@ -22,13 +22,14 @@ public abstract class MapObject extends Actor{
 	protected int HP;
 	protected JPanel actionPanel;
 	protected String name;
+	protected Map map;
 	
-	public MapObject(String imgPath, Location loc) {
+	public MapObject(String imgPath, Map map, Location loc) {
 		super(imgPath);
 		this.location = loc;
+		this.map = map;
 		this.HP = 1;
 		initActionPanel();
-		show();
 	}
 	
 	private void initActionPanel() {
@@ -45,6 +46,7 @@ public abstract class MapObject extends Actor{
 	}
 	
 	public void offerActions() {
+		map.activateMouseListener(false);
 		Output.setInputPanel(actionPanel);
 	}
 
@@ -88,6 +90,14 @@ public abstract class MapObject extends Actor{
 	
 	public int getHP() {
 		return this.HP;
+	}
+	
+	public void setLocation(Location loc) {
+		this.location = loc;
+	}
+	
+	public Location getLocation() {
+		return this.location;
 	}
 	
 	public void setActionPanel(JPanel panel) {

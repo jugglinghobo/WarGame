@@ -67,7 +67,7 @@ public class CityActionPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				int number = Input.promptIntegerInput("How many do you want to make?");
 				if (number != 0) {
-					city.create(new Soldier(city.getPlayer(), city), number);
+					city.create(new Soldier(city.player, city.map, city), number);
 				}	
 			}
 		});
@@ -77,7 +77,7 @@ public class CityActionPanel extends JPanel{
 			public void actionPerformed(ActionEvent e) {
 				int number = Input.promptIntegerInput("How many do you want to make?");
 				if (number != 0) {
-					city.create(new Knight(city.getPlayer(), city), number);
+					city.create(new Knight(city.player, city.map, city), number);
 				}
 			}
 		});
@@ -85,7 +85,7 @@ public class CityActionPanel extends JPanel{
 		leaveWarriorButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				Object[] warriors = {new Knight(city.getPlayer(), city), new Soldier(city.getPlayer(), city)};
+				Object[] warriors = {new Knight(city.player, city.map, city), new Soldier(city.player, city.map, city)};
 				Warrior w = (Warrior) Input.promptChooseInput(warriors, "what kind of Warriors would do you want to leave?", "leave Warriors");
 				if (w != null) {
 					int number = Input.promptIntegerInput("How many warriors do you want to leave?");
@@ -99,14 +99,14 @@ public class CityActionPanel extends JPanel{
 		defWallButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				city.build(new DefenseWall(null));
+				city.build(new DefenseWall(map, city.location));
 			}
 		});
 		JButton farmLandButton = new JButton(new ImageIcon("sprites/farmingLand.png"));
 		farmLandButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				city.build(new FarmingLand(null));
+				city.build(new FarmingLand(map, city.location));
 			}
 		});
 		JButton tradingRouteButton = new JButton(new ImageIcon("sprites/tradingRoute.png"));

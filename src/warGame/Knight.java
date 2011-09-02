@@ -9,8 +9,8 @@ public class Knight extends Warrior {
 	private int AP = 3;
 	private int movement = 10;
 	
-	public Knight(Player player, City city) {
-		super("sprites/knight.png", city);
+	public Knight(Player player, Map map, City city) {
+		super("sprites/knight.png", map, city);
 		super.setName("Knight");
 		this.player = player;
 		this.city = city;
@@ -38,7 +38,7 @@ public class Knight extends Warrior {
 
 	@Override
 	public Warrior copy() {
-		return new Knight(getPlayer(), this.city);
+		return new Knight(this.player, this.map, this.city);
 	}
 
 	@Override

@@ -15,13 +15,12 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 	private ArrayList<City> cities = new ArrayList<City>();
 	private ArrayList<Location> coloredLocs = new ArrayList<Location>();
 	private Player activePlayer;
-	private GGBackground bg;	
+	private GGBackground bg;
 
 	public Map() {
 		super(39, 53, 15, Color.LIGHT_GRAY, "sprites/map2_2.jpg", false, true);
 		this.bg = getBg();
 		initializeCities();
-		this.activeateMouseListener(true);
 	}
 
 	private void initializeCities() {
@@ -31,9 +30,9 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 		this.cities.add(new City(this, "ZŸrich", new Location(10, 20)));
 		this.cities.add(new City(this, "Biel", new Location(15, 25)));
 		for (City c : cities) {
-			c.addMouseTouchListener(this, GGMouse.lClick, true);
-			this.addActor(c, c.getLocation());
+			addMapObjectActor(c);
 		}
+		activateMouseListener(false);
 		refresh();
 	}
 
@@ -84,10 +83,14 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 					MapObject clicked = (MapObject) actor;
 					if (activePlayer.getMapObjects().contains(clicked)) {
 						clicked.offerActions();
+						Output.println(clicked.toString());
 					} else {
+						activateMouseListener(false);
 						Output.clearPanel();
+						clearMap();
 					}
 				}
+				refresh();
 			} break; 
 		}
 	}
@@ -121,7 +124,7 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 		refresh();
 	}
 
-	public void activeateMouseListener(boolean bool) {
+	public void activateMouseListener(boolean bool) {
 		if (bool) {
 			this.addMouseListener(this, GGMouse.lClick | GGMouse.lDrag | GGMouse.rClick | GGMouse.rDrag);
 		} else {
@@ -132,5 +135,13 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 
 	public ArrayList<Location> getColoredLocs() {
 		return this.coloredLocs;
+	}
+
+	public void addMapObjectActor(MapObject mapObj) {
+		activateMouseListener(false);
+		addActor(mapObj, mapObj.getLocation());
+		mapObj.addMouseTouchListener(this, GGMouse.lClick, true);
+		activateMouseListener(true);
+		refresh();
 	}
 }

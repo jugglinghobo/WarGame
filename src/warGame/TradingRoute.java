@@ -4,8 +4,8 @@ import ch.aplu.jgamegrid.Location;
 
 public class TradingRoute extends MapObject {
 
-	public TradingRoute(Location location) {
-		super("sprites/tradingRoute.png", location);
+	public TradingRoute(Map map, Location location) {
+		super("sprites/tradingRoute.png", map, location);
 		this.price = 4;
 		this.location = location;
 		super.setName("Trading Route");
@@ -18,6 +18,6 @@ public class TradingRoute extends MapObject {
 
 	@Override
 	public MapObject copy() {
-		return new TradingRoute(this.location);
+		return new TradingRoute(this.map, this.location);
 	}
 }

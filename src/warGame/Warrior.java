@@ -13,9 +13,8 @@ public abstract class Warrior extends MapObject{
 	protected int movement;
 	
 
-	public Warrior(String imgPath, City city) {
-		super(imgPath, city.getLocation());
-		location = city.getLocation();
+	public Warrior(String imgPath, Map map, City city) {
+		super(imgPath, map, city.getLocation());
 		initInputPanel();
 	}
 	
@@ -38,12 +37,6 @@ public abstract class Warrior extends MapObject{
 
 	protected void moveWarrior() {
 		move();
-		Output.refreshMap();
-	}
-
-	@Override
-	public Location getLocation() {
-		return super.location;
 	}
 
 	@Override

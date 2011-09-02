@@ -31,43 +31,6 @@ public class GameLogic{
 	
 	private void initPanels() {
 		initStatsPanel();
-		initMapActionPanel();
-	}
-
-	private void initMapActionPanel() {
-		this.mapActionPanel = new JPanel();
-//		JButton defWallButton = new JButton(new ImageIcon("sprites/wall.png"));
-//		defWallButton.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent arg0) {
-//				map.build(new DefenseWall(null));
-//			}
-//		});
-//		JButton farmLandButton = new JButton(new ImageIcon("sprites/farmingLand.png"));
-//		farmLandButton.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				map.build(new FarmingLand(null));
-//			}
-//		});
-//		JButton tradingRouteButton = new JButton(new ImageIcon("sprites/tradingRoute.png"));
-//		tradingRouteButton.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				map.buildTradingRoute();
-//			}
-//		});
-//		JButton clearMapButton = new JButton(new ImageIcon("sprites/mapIcon.png"));
-//		clearMapButton.addActionListener(new ActionListener() {
-//			@Override
-//			public void actionPerformed(ActionEvent e) {
-//				map.clearMap();
-//			}
-//		});
-//		mapActionPanel.add(defWallButton);
-//		mapActionPanel.add(farmLandButton);
-//		mapActionPanel.add(tradingRouteButton);
-//		mapActionPanel.add(clearMapButton);
 	}
 
 	private void initStatsPanel() {

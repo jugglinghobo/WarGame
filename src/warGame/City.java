@@ -33,18 +33,17 @@ public class City extends MapObject {
 	private ArrayList<Building> buildings = new ArrayList<Building>();
 	private ArrayList<Warrior> warriors = new ArrayList<Warrior>();
 	private ArrayList<City> connectedCities = new ArrayList<City>();
-	private Map map;
 	private Location spawnLocation;
 
 	public City(Map map, String name, Location loc) {
-		super("sprites/city.png", loc);
-		this.map = map;
-		setName(name);
-		setHP(5);
+		super("sprites/city.png", map, loc);
+		this.name = name;
+		this.HP = 5;
 		this.money = 20000;
+		this.location = loc;
+		this.spawnLocation = new Location(location.x, location.y-1);
 		initActionPanel();
-		setLocation(loc);
-		this.spawnLocation = new Location(getLocation().x, getLocation().y-1);
+		show();
 	}
 
 	private void initActionPanel() {
@@ -62,7 +61,7 @@ public class City extends MapObject {
 			}
 			if (possibleCheckOut.size() < number) {
 				Output.println("you want to leave " + number + " but have only " + possibleCheckOut.size() +" " + warrior.toString());
-				realCheckOut.clear();
+				possibleCheckOut.clear();
 			} else {
 				for (int i = 0; i < number; i++) {
 					realCheckOut.add(possibleCheckOut.remove(0));
@@ -76,13 +75,10 @@ public class City extends MapObject {
 	}
 
 	private void leaveTown(Warrior w) {
-		map.activeateMouseListener(false);
 		this.warriors.remove(w);
-		w.setLocation(spawnLocation);
 		player.addMapObject(w);
-		w.addMouseTouchListener(map, GGMouse.lClick);
-		map.addActor(w, w.getLocation());
-		map.activeateMouseListener(true);
+		w.setLocation(spawnLocation);
+		map.addMapObjectActor(w);
 	}
 
 	public void buildBuilding(Building building) {
@@ -102,16 +98,13 @@ public class City extends MapObject {
 						a.show();
 					}
 				} else {
-					map.activeateMouseListener(false);
 					MapObject newObject = mapObj.copy();
 					newObject.setLocation(loc);
 					player.addMapObject(newObject);
 					if (mapObj.getClass().equals(TradingRoute.class)) {
 						player.addTradingRoute(loc);
 					}
-					newObject.addMouseTouchListener(map, GGMouse.lClick, true);
-					map.addActor(newObject, newObject.getLocation());
-					map.activeateMouseListener(true);
+					map.addMapObjectActor(newObject);
 				}
 			}
 			Output.println("you just created " + coloredLocs.size() + " new " + mapObj.toString());
@@ -120,7 +113,7 @@ public class City extends MapObject {
 	}
 	
 	public void buildTradingRoute() {
-		build(new TradingRoute(null));
+		build(new TradingRoute(map, location));
 		ArrayList<Location> existingTradingRoutes = new ArrayList<Location>(player.getTradingRoutes());
 		checkTradingConnection(existingTradingRoutes);
 		
@@ -262,4 +255,8 @@ public class City extends MapObject {
 		return sb.toString();
 	}
 	
+	public void offerActions() {
+		map.activateMouseListener(true);
+		Output.setInputPanel(actionPanel);
+	}
 }

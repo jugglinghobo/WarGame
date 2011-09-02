@@ -8,8 +8,8 @@ public class Soldier extends Warrior {
 	private int HP = 1;
 	private int AP = 1;
 	
-	public Soldier(Player player, City city) {
-		super("sprites/soldier.png", city);
+	public Soldier(Player player, Map map, City city) {
+		super("sprites/soldier.png", map, city);
 		super.setName("Soldier");
 		this.player = player;
 		setCity(city);
@@ -38,7 +38,7 @@ public class Soldier extends Warrior {
 
 	@Override
 	public Warrior copy() {
-		return new Soldier(player, this.city);
+		return new Soldier(player, this.map, this.city);
 	}
 
 	@Override
