@@ -9,23 +9,16 @@ import ch.aplu.jgamegrid.*;
 public class City extends MapObject {
 
 	public enum Building {
-		CASERN(10, "Caserns are used for creating and training Soldiers"), FORGE(
-				15, "Forges are used for creating nd training Knights");
+		CASERN(10), FORGE(15);
 
 		private int price;
-		private String info;
 
-		private Building(int price, String info) {
+		private Building(int price) {
 			this.price = price;
-			this.info = info;
 		}
 
 		public int getPrice() {
 			return price;
-		}
-
-		public String getInfo() {
-			return this.info;
 		}
 	}
 
@@ -34,19 +27,21 @@ public class City extends MapObject {
 	private ArrayList<Warrior> warriors = new ArrayList<Warrior>();
 	private ArrayList<City> connectedCities = new ArrayList<City>();
 	private Location spawnLocation;
+	private CityActionPanel actionPanel;
 
 	public City(Map map, String name, Location loc) {
 		super("sprites/city.png", map, loc);
-		this.name = name;
-		this.HP = 5;
-		this.money = 20000;
 		this.spawnLocation = new Location(loc.x, loc.y-1);
+		this.money = 20000;
+		this.actionPanel = new CityActionPanel(this);
+		setName(name);
+		setHP(5);
 		initActionPanel();
 		show();
 	}
 
 	private void initActionPanel() {
-		setActionPanel(new CityActionPanel(this).getPanel());
+		setActionPanel(actionPanel.getPanel());
 	}
 	
 	protected void leaveWarriors(Warrior warrior, int number) {
@@ -118,16 +113,9 @@ public class City extends MapObject {
 		
 	}
 
-	private void checkTradingConnection(ArrayList<Location> existingTradingRoutes) {
-		ArrayList<City> cities = new ArrayList<City>(player.getCities());
-		for (City c : cities) {
-			c.checkTradingConnection(existingTradingRoutes, cities);
-		}
-	}
-
 	public void create(Warrior warrior, int number) {
 		if (number > 0) {
-			if (this.buildings.contains(warrior.requiredBuilding())) {
+			if (this.buildings.contains(warrior.getRequiredBuilding())) {
 				if (canPay(number * warrior.getPrice())) {
 					for (int i = 0; i < number; i++) {
 						Warrior newWarrior = warrior.copy();
@@ -138,9 +126,16 @@ public class City extends MapObject {
 							+ warrior.toString() + "s");
 				}
 			} else {
-				Output.println("you need to build a " + warrior.requiredBuilding()
+				Output.println("you need to build a " + warrior.getRequiredBuilding()
 						+ " first!");
 			}
+		}
+	}
+	
+	private void checkTradingConnection(ArrayList<Location> existingTradingRoutes) {
+		ArrayList<City> cities = new ArrayList<City>(player.getCities());
+		for (City c : cities) {
+			c.checkTradingConnection(existingTradingRoutes, cities);
 		}
 	}
 
@@ -172,6 +167,8 @@ public class City extends MapObject {
 		}
 	}
 
+	
+	// recursive Method, tracks the colored path
 	private void findPathFrom(Location loc, ArrayList<Location> uncheckedTradingRoutes, ArrayList<City> playerCities) {
 		for (Location neighbour : loc.getNeighbourLocations(0.5)) {
 			for (City c : playerCities) {
@@ -189,13 +186,14 @@ public class City extends MapObject {
 		
 	}
 	
+	//paying method
 	public boolean canPay(int price) {
 		int option = JOptionPane.showConfirmDialog(null, "This will cost you " + price + " money", null, JOptionPane.YES_NO_OPTION,
 				JOptionPane.PLAIN_MESSAGE, null);
 		if (option == JOptionPane.OK_OPTION) {
 			if (money - price >= 0) {
 				money -= price;
-				Output.setInputPanel(actionPanel);
+				Output.setInputPanel(getActionPanel());
 				return true;
 			} else {
 			Output.println("You have not enough Money");
@@ -219,11 +217,6 @@ public class City extends MapObject {
 	public MapObject copy() {
 		return null;
 	}
-
-//	@Override
-//	public Location getLocation() {
-//		return location;
-//	}
 
 	public String toString() {
 		return this.name.toUpperCase();
@@ -255,7 +248,8 @@ public class City extends MapObject {
 	}
 	
 	public void offerActions() {
+		actionPanel.updateStats();
 		map.activateMouseListener(true);
-		Output.setInputPanel(actionPanel);
+		Output.setInputPanel(getActionPanel());
 	}
 }

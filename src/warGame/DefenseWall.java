@@ -7,7 +7,7 @@ public class DefenseWall extends MapObject {
 
 	public DefenseWall(Map map, Location location) {
 		super("sprites/wall.png", map, location);
-		this.price = 6;
+		setPrice(6);
 		super.setName("Defense Wall");
 	}
 

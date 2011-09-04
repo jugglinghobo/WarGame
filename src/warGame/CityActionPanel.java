@@ -33,14 +33,18 @@ public class CityActionPanel extends JPanel{
 		this.panel = new JPanel();
 		initStats();
 		initButtons();
-		panel.setSize(300, 300);
+//		panel.setSize(300, 300);
 	}
 	
 	private void initStats() {
 		this.statsArea = new JTextPane();
+		statsArea.setOpaque(false);
 		statsArea.setText(city.getStats());
-		
-		
+		panel.add(statsArea);
+	}
+	
+	public void updateStats() {
+		statsArea.setText(city.getStats());
 	}
 
 	private void initButtons() {
@@ -52,6 +56,7 @@ public class CityActionPanel extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				city.buildBuilding(Building.CASERN);
+				updateStats();
 			}
 		});
 		JButton forgeButton = new JButton("Forge");
@@ -59,6 +64,7 @@ public class CityActionPanel extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				city.buildBuilding(Building.FORGE);
+				updateStats();
 			}
 		});
 		JButton soldierButton = new JButton("Soldier");
@@ -68,7 +74,8 @@ public class CityActionPanel extends JPanel{
 				int number = Input.promptIntegerInput("How many do you want to make?");
 				if (number != 0) {
 					city.create(new Soldier(city.player, city.map, city), number);
-				}	
+				}
+				updateStats();
 			}
 		});
 		JButton knightButton = new JButton("Knight");
@@ -79,6 +86,7 @@ public class CityActionPanel extends JPanel{
 				if (number != 0) {
 					city.create(new Knight(city.player, city.map, city), number);
 				}
+				updateStats();
 			}
 		});
 		JButton leaveWarriorButton = new JButton("leave Warriors");
@@ -93,6 +101,7 @@ public class CityActionPanel extends JPanel{
 						city.leaveWarriors(w, number);
 					}
 				}
+				updateStats();
 			}
 		});
 		JButton defWallButton = new JButton(new ImageIcon("sprites/wall.png"));
@@ -100,6 +109,7 @@ public class CityActionPanel extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
 				city.build(new DefenseWall(map, city.getLocation()));
+				updateStats();
 			}
 		});
 		JButton farmLandButton = new JButton(new ImageIcon("sprites/farmingLand.png"));
@@ -107,6 +117,7 @@ public class CityActionPanel extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				city.build(new FarmingLand(map, city.getLocation()));
+				updateStats();
 			}
 		});
 		JButton tradingRouteButton = new JButton(new ImageIcon("sprites/tradingRoute.png"));
@@ -114,6 +125,7 @@ public class CityActionPanel extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				city.buildTradingRoute();
+				updateStats();
 			}
 		});
 		JButton clearMapButton = new JButton(new ImageIcon("sprites/mapIcon.png"));
@@ -121,6 +133,7 @@ public class CityActionPanel extends JPanel{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				map.clearMap();
+				updateStats();
 			}
 		});
 		panel.add(defWallButton);

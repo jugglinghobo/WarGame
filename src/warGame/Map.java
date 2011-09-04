@@ -83,7 +83,6 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 					MapObject clicked = (MapObject) actor;
 					if (activePlayer.getMapObjects().contains(clicked)) {
 						clicked.offerActions();
-						Output.println(clicked.toString());
 					} else {
 						activateMouseListener(false);
 						Output.clearPanel();
@@ -140,7 +139,7 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 	public void addMapObjectActor(MapObject mapObj) {
 		activateMouseListener(false);
 		addActor(mapObj, mapObj.getLocation());
-		mapObj.addMouseTouchListener(this, GGMouse.lClick);
+		mapObj.addMouseTouchListener(this, GGMouse.lClick, false);
 		activateMouseListener(true);
 		refresh();
 	}

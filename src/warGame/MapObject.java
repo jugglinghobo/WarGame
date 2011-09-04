@@ -6,6 +6,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
+import sun.awt.SubRegionShowable;
+
 import ch.aplu.jgamegrid.*;
 
 /**
@@ -16,13 +18,13 @@ import ch.aplu.jgamegrid.*;
 public abstract class MapObject extends Actor{
 	
 	protected Player player;
-	protected City city;
-	private Location location;
-	protected int price;
-	protected int HP;
-	protected JPanel actionPanel;
-	protected String name;
 	protected Map map;
+	private City city;
+	private Location location;
+	private int price;
+	private int HP;
+	private JPanel actionPanel;
+	protected String name;
 	
 	public MapObject(String imgPath, Map map, Location loc) {
 		super(imgPath);
@@ -39,7 +41,7 @@ public abstract class MapObject extends Actor{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				removeSelf();
-				Output.refreshMap();
+				map.refresh();
 			}
 		});
 		actionPanel.add(destroyButton);
@@ -49,6 +51,8 @@ public abstract class MapObject extends Actor{
 		map.activateMouseListener(false);
 		Output.setInputPanel(actionPanel);
 	}
+	
+	public abstract MapObject copy();
 
 	public void setPlayer(Player player) {
 		this.player = player;
@@ -58,14 +62,16 @@ public abstract class MapObject extends Actor{
 		return player;
 	}
 	
-	public abstract MapObject copy();
-	
 	public void setName(String name) {
 		this.name = name;
 	}
 	
 	public String toString() {
 		return this.name;
+	}
+	
+	public void setPrice(int price) {
+		this.price = price;
 	}
 	
 	public int getPrice() {
@@ -105,5 +111,23 @@ public abstract class MapObject extends Actor{
 	
 	public void setActionPanel(JPanel panel) {
 		this.actionPanel = panel;
+	}
+	
+	public JPanel getActionPanel() {
+		return this.actionPanel;
+	}
+
+	public void hit(int attackPoints) {
+		Output.println(name + " is attacked");
+		subtractFromHP(attackPoints);
+		if (this.HP <= 0) {
+			Output.println(name + " was destroyed!");
+			removeSelf();
+		}
+		map.refresh();
+	}
+	
+	public void subtractFromHP(int attack) {
+		this.HP -= attack;
 	}
 }

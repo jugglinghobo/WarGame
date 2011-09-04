@@ -26,9 +26,4 @@ public class Output {
 		Output.println("");
 		gui.setActionPanel(new JPanel());
 	}
-
-
-	public static void refreshMap() {
-		gui.refreshMap();
-	}
 }

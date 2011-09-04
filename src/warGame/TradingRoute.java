@@ -6,7 +6,7 @@ public class TradingRoute extends MapObject {
 
 	public TradingRoute(Map map, Location location) {
 		super("sprites/tradingRoute.png", map, location);
-		this.price = 4;
+		setPrice(5);
 		super.setName("Trading Route");
 	}
 

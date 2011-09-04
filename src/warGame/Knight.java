@@ -13,7 +13,7 @@ public class Knight extends Warrior {
 		super("sprites/knight.png", map, city);
 		super.setName("Knight");
 		this.player = player;
-		this.city = city;
+		setRequiredBuilding(Building.FORGE);
 	}
 
 	@Override
@@ -38,11 +38,6 @@ public class Knight extends Warrior {
 
 	@Override
 	public Warrior copy() {
-		return new Knight(this.player, this.map, this.city);
-	}
-
-	@Override
-	public Building requiredBuilding() {
-		return Building.FORGE;
+		return new Knight(this.player, this.map, getCity());
 	}
 }

@@ -7,7 +7,7 @@ public class FarmingLand extends MapObject {
 
 	public FarmingLand(Map map, Location location) {
 		super("sprites/farmingLand.png", map, location);
-		this.price = 4;
+		setPrice(6);
 		super.setName("Farming Land");
 	}
 

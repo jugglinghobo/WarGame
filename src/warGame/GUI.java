@@ -43,7 +43,7 @@ public class GUI {
 	}
 
 	private void initFrame() {
-		this.frame = new JFrame("WarGame");
+		this.frame = new JFrame();
 		frame.setExtendedState(frame.getExtendedState() | JFrame.MAXIMIZED_BOTH);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.setLayout(new BorderLayout(5, 5));
@@ -87,13 +87,6 @@ public class GUI {
 		outputPane.setText(string);
 	}
 
-	public String getInput() {
-		String inputCpy = input.trim();
-		input = "";
-		return inputCpy;
-		
-	}
-
 	public void setActionPanel(JPanel panel) {
 		interactionPanel.remove(actionPanel);
 		this.actionPanel = panel;
@@ -112,7 +105,6 @@ public class GUI {
 
 	public void refreshMap() {
 		this.map.refresh();
-		
 	}
 }
 
