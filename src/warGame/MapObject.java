@@ -17,7 +17,7 @@ public abstract class MapObject extends Actor{
 	
 	protected Player player;
 	protected City city;
-	protected Location location;
+	private Location location;
 	protected int price;
 	protected int HP;
 	protected JPanel actionPanel;
@@ -92,12 +92,15 @@ public abstract class MapObject extends Actor{
 		return this.HP;
 	}
 	
+	@Override
 	public void setLocation(Location loc) {
 		this.location = loc;
+		super.setLocation(this.location);
 	}
 	
+	@Override
 	public Location getLocation() {
-		return this.location;
+		return location;
 	}
 	
 	public void setActionPanel(JPanel panel) {

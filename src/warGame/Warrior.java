@@ -5,12 +5,13 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import ch.aplu.jgamegrid.Location;
 import warGame.City.Building;
 
 public abstract class Warrior extends MapObject{
 	
 	protected int movement;
+	private int HP;
+	private int AP;
 	
 
 	public Warrior(String imgPath, Map map, City city) {
@@ -30,13 +31,14 @@ public abstract class Warrior extends MapObject{
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				moveWarrior();
+				map.refresh();
 			}
 		});
 		actionPanel.add(moveWarriorButton);
 	}
 
 	protected void moveWarrior() {
-		move();
+		this.move();
 	}
 
 	@Override
@@ -44,25 +46,27 @@ public abstract class Warrior extends MapObject{
 
 	public abstract Building requiredBuilding();
 
-	public abstract int getMovement();
+	public int getMovement() {
+		return this.movement;
+	}
 
-	public abstract int getAP();
-	
-	public abstract int getHP();
-
-	public void setName(String string) {
-		super.setName(string);
-	}
-	
-	public void setLocation(Location loc) {
-		this.location = loc;
-	}
-	
-	public void setCity(City city) {
-		super.setCity(city);
-	}
-	
 	public void setMovement(int movement) {
 		this.movement = movement;
+	}
+	
+	public int getHP() {
+		return this.HP;
+	}
+	
+	public void setHP(int HP) {
+		this.HP = HP;
+	}
+
+	public int getAP() {
+		return this.AP;
+	}
+	
+	public void setAP(int AP) {
+		this.AP = AP;
 	}
 }

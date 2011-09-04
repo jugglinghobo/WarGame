@@ -9,7 +9,7 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 	
 	/*
 	 * This is the Game map, which is basically a GUI that shows Player actions in real time.
-	 * The GUI will be done with help of the GameGrid Library provided by Stšfe (and other dudes from PHBern).
+	 * The GUI will be done with help of the GameGrid Library provided by Aegidius Pluess.
 	 */
 	private static final long serialVersionUID = 1L;
 	private ArrayList<City> cities = new ArrayList<City>();
@@ -140,7 +140,7 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 	public void addMapObjectActor(MapObject mapObj) {
 		activateMouseListener(false);
 		addActor(mapObj, mapObj.getLocation());
-		mapObj.addMouseTouchListener(this, GGMouse.lClick, true);
+		mapObj.addMouseTouchListener(this, GGMouse.lClick);
 		activateMouseListener(true);
 		refresh();
 	}

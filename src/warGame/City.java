@@ -40,8 +40,7 @@ public class City extends MapObject {
 		this.name = name;
 		this.HP = 5;
 		this.money = 20000;
-		this.location = loc;
-		this.spawnLocation = new Location(location.x, location.y-1);
+		this.spawnLocation = new Location(loc.x, loc.y-1);
 		initActionPanel();
 		show();
 	}
@@ -76,8 +75,8 @@ public class City extends MapObject {
 
 	private void leaveTown(Warrior w) {
 		this.warriors.remove(w);
-		player.addMapObject(w);
 		w.setLocation(spawnLocation);
+		player.addMapObject(w);
 		map.addMapObjectActor(w);
 	}
 
@@ -113,7 +112,7 @@ public class City extends MapObject {
 	}
 	
 	public void buildTradingRoute() {
-		build(new TradingRoute(map, location));
+		build(new TradingRoute(map, getLocation()));
 		ArrayList<Location> existingTradingRoutes = new ArrayList<Location>(player.getTradingRoutes());
 		checkTradingConnection(existingTradingRoutes);
 		
@@ -147,7 +146,7 @@ public class City extends MapObject {
 
 	public void checkTradingConnection(ArrayList<Location> existingTradingRoutes, ArrayList<City> allCities) {
 		ArrayList<Location> uncheckedTradingRoutes = new ArrayList<Location>(existingTradingRoutes);
-		ArrayList<Location> cityNeighbours = this.location.getNeighbourLocations(0.5);
+		ArrayList<Location> cityNeighbours = getLocation().getNeighbourLocations(0.5);
 		for (Location loc : cityNeighbours) {
 			if (existingTradingRoutes.contains(loc)) {
 				uncheckedTradingRoutes.remove(loc);
@@ -176,7 +175,7 @@ public class City extends MapObject {
 	private void findPathFrom(Location loc, ArrayList<Location> uncheckedTradingRoutes, ArrayList<City> playerCities) {
 		for (Location neighbour : loc.getNeighbourLocations(0.5)) {
 			for (City c : playerCities) {
-				if (c.location.equals(neighbour)) {
+				if (c.getLocation().equals(neighbour)) {
 					if (!this.connectedCities.contains(c)) {
 						this.connectedCities.add(c);
 					}
@@ -221,10 +220,10 @@ public class City extends MapObject {
 		return null;
 	}
 
-	@Override
-	public Location getLocation() {
-		return location;
-	}
+//	@Override
+//	public Location getLocation() {
+//		return location;
+//	}
 
 	public String toString() {
 		return this.name.toUpperCase();

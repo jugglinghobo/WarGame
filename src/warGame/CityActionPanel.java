@@ -99,14 +99,14 @@ public class CityActionPanel extends JPanel{
 		defWallButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent arg0) {
-				city.build(new DefenseWall(map, city.location));
+				city.build(new DefenseWall(map, city.getLocation()));
 			}
 		});
 		JButton farmLandButton = new JButton(new ImageIcon("sprites/farmingLand.png"));
 		farmLandButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				city.build(new FarmingLand(map, city.location));
+				city.build(new FarmingLand(map, city.getLocation()));
 			}
 		});
 		JButton tradingRouteButton = new JButton(new ImageIcon("sprites/tradingRoute.png"));
