@@ -6,8 +6,6 @@ import java.awt.event.ActionListener;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-import sun.awt.SubRegionShowable;
-
 import ch.aplu.jgamegrid.*;
 
 /**
@@ -45,6 +43,15 @@ public abstract class MapObject extends Actor{
 			}
 		});
 		actionPanel.add(destroyButton);
+	}
+	
+	@Override
+	public void move(int distance) {
+		if (map.getActorsAt(getNextMoveLocation()).isEmpty()) {
+			super.move(distance);
+		} else {
+			Output.println("You can not move your warriors that way!");
+		}
 	}
 	
 	public void offerActions() {

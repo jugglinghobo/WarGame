@@ -26,18 +26,25 @@ public class City extends MapObject {
 	private ArrayList<Building> buildings = new ArrayList<Building>();
 	private ArrayList<Warrior> warriors = new ArrayList<Warrior>();
 	private ArrayList<City> connectedCities = new ArrayList<City>();
+	private ArrayList<Location> spawnLocations = new ArrayList<Location>();
 	private Location spawnLocation;
 	private CityActionPanel actionPanel;
 
 	public City(Map map, String name, Location loc) {
 		super("sprites/city.png", map, loc);
-		this.spawnLocation = new Location(loc.x, loc.y-1);
 		this.money = 20000;
 		this.actionPanel = new CityActionPanel(this);
+		initSpawnLocations();
 		setName(name);
 		setHP(5);
 		initActionPanel();
 		show();
+	}
+
+	private void initSpawnLocations() {
+		Location loc = getLocation();
+		this.spawnLocations = loc.getNeighbourLocations(1);
+		this.spawnLocation = spawnLocations.get(2);
 	}
 
 	private void initActionPanel() {
@@ -84,7 +91,7 @@ public class City extends MapObject {
 	
 	public void build(MapObject mapObj) {
 		ArrayList<Location> coloredLocs = map.getColoredLocs();
-		if (canPay(coloredLocs.size() * mapObj.getPrice())) {
+		if (!coloredLocs.isEmpty() && canPay(coloredLocs.size() * mapObj.getPrice())) {
 			for (Location loc : coloredLocs) {
 				ArrayList<Actor> actors = map.getActorsAt(loc);
 				if (!actors.isEmpty()) {
@@ -110,7 +117,6 @@ public class City extends MapObject {
 		build(new TradingRoute(map, getLocation()));
 		ArrayList<Location> existingTradingRoutes = new ArrayList<Location>(player.getTradingRoutes());
 		checkTradingConnection(existingTradingRoutes);
-		
 	}
 
 	public void create(Warrior warrior, int number) {
@@ -173,7 +179,7 @@ public class City extends MapObject {
 		for (Location neighbour : loc.getNeighbourLocations(0.5)) {
 			for (City c : playerCities) {
 				if (c.getLocation().equals(neighbour)) {
-					if (!this.connectedCities.contains(c)) {
+					if (!this.equals(c) && !this.connectedCities.contains(c)) {
 						this.connectedCities.add(c);
 					}
 				}
@@ -231,7 +237,7 @@ public class City extends MapObject {
 		StringBuffer sb = new StringBuffer();
 		int soldierCount = 0;
 		int knightCount = 0;
-		sb.append(this.name + "\n");
+		sb.append(this.name + "\n\n");
 		sb.append("Money: " + this.money + "\n");
 		for (Warrior w : this.warriors) {
 			if (w.getClass().equals(Soldier.class)) {
@@ -243,6 +249,7 @@ public class City extends MapObject {
 		}
 		sb.append("Soldiers: " + soldierCount + "\n");
 		sb.append("Knights: " + knightCount + "\n");
+		sb.append("Buildings: " + this.buildings + "\n");
 		sb.append("Connected Cities: " + this.connectedCities);
 		return sb.toString();
 	}
@@ -251,5 +258,21 @@ public class City extends MapObject {
 		actionPanel.updateStats();
 		map.activateMouseListener(true);
 		Output.setInputPanel(getActionPanel());
+	}
+
+	public void setSpawnLocation() {
+		ArrayList<Location> coloredLocs = map.getColoredLocs();
+		if (coloredLocs.size() == 1) {
+			Location clicked = coloredLocs.get(0);
+			if (this.spawnLocations.contains(clicked)) {
+				this.spawnLocation = clicked;
+				Output.println("you set your SpawnPoint");
+			} else {
+				Output.println("You can only choose a spawnLocation adjacent to your city");
+			}
+		} else {
+			Output.println("You have to choose ONE Location for your Spawnpoint");
+		}
+		
 	}
 }

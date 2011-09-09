@@ -1,5 +1,7 @@
 package warGame;
 
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -31,16 +33,16 @@ public class CityActionPanel extends JPanel{
 
 	private void initPanel() {
 		this.panel = new JPanel();
+		panel.setLayout(new BorderLayout());
 		initStats();
 		initButtons();
-//		panel.setSize(300, 300);
 	}
 	
 	private void initStats() {
 		this.statsArea = new JTextPane();
 		statsArea.setOpaque(false);
 		statsArea.setText(city.getStats());
-		panel.add(statsArea);
+		panel.add(statsArea, BorderLayout.NORTH);
 	}
 	
 	public void updateStats() {
@@ -51,6 +53,59 @@ public class CityActionPanel extends JPanel{
 		/*
 		 * needs: - Casern - Forge - Soldier - Knight - leave Warriors - Trading Route - Farming Land - Defense Wall
 		 */
+		JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 5, 5));
+		
+		/*
+		 * MapObjectButtons
+		 */
+		JPanel mapObjectPanel = new JPanel(new GridLayout(1, 5, 5, 5));
+		
+		JButton defWallButton = new JButton(new ImageIcon("sprites/wall.png"));
+		defWallButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				city.build(new DefenseWall(map, city.getLocation()));
+				updateStats();
+			}
+		});
+		JButton farmLandButton = new JButton(new ImageIcon("sprites/farmingLand.png"));
+		farmLandButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				city.build(new FarmingLand(map, city.getLocation()));
+				updateStats();
+			}
+		});
+		JButton tradingRouteButton = new JButton(new ImageIcon("sprites/tradingRoute.png"));
+		tradingRouteButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				city.buildTradingRoute();
+				updateStats();
+			}
+		});
+		JButton clearMapButton = new JButton(new ImageIcon("sprites/mapIcon.png"));
+		clearMapButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				map.clearMap();
+				updateStats();
+			}
+		});
+		JButton setSpawnLocationButton = new JButton(new ImageIcon("sprites/spawnLoc.png"));
+		setSpawnLocationButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				city.setSpawnLocation();
+				map.clearMap();
+			}
+		});
+		
+		/*
+		 * CityActionButtons
+		 */
+		JPanel cityActionPanel = new JPanel(new GridLayout(1, 5, 5, 5));
+		
 		JButton casernButton = new JButton("Casern");
 		casernButton.addActionListener(new ActionListener() {
 			@Override
@@ -104,47 +159,20 @@ public class CityActionPanel extends JPanel{
 				updateStats();
 			}
 		});
-		JButton defWallButton = new JButton(new ImageIcon("sprites/wall.png"));
-		defWallButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent arg0) {
-				city.build(new DefenseWall(map, city.getLocation()));
-				updateStats();
-			}
-		});
-		JButton farmLandButton = new JButton(new ImageIcon("sprites/farmingLand.png"));
-		farmLandButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				city.build(new FarmingLand(map, city.getLocation()));
-				updateStats();
-			}
-		});
-		JButton tradingRouteButton = new JButton(new ImageIcon("sprites/tradingRoute.png"));
-		tradingRouteButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				city.buildTradingRoute();
-				updateStats();
-			}
-		});
-		JButton clearMapButton = new JButton(new ImageIcon("sprites/mapIcon.png"));
-		clearMapButton.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				map.clearMap();
-				updateStats();
-			}
-		});
-		panel.add(defWallButton);
-		panel.add(farmLandButton);
-		panel.add(tradingRouteButton);
-		panel.add(clearMapButton);
-		panel.add(casernButton);
-		panel.add(forgeButton);
-		panel.add(soldierButton);
-		panel.add(knightButton);
-		panel.add(leaveWarriorButton);
+		
+		mapObjectPanel.add(defWallButton);
+		mapObjectPanel.add(farmLandButton);
+		mapObjectPanel.add(tradingRouteButton);
+		mapObjectPanel.add(clearMapButton);
+		mapObjectPanel.add(setSpawnLocationButton);
+		cityActionPanel.add(casernButton);
+		cityActionPanel.add(forgeButton);
+		cityActionPanel.add(soldierButton);
+		cityActionPanel.add(knightButton);
+		cityActionPanel.add(leaveWarriorButton);
+		buttonPanel.add(mapObjectPanel);
+		buttonPanel.add(cityActionPanel);
+		panel.add(buttonPanel);
 	}
 
 }

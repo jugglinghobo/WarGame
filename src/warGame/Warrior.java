@@ -46,7 +46,7 @@ public abstract class Warrior extends MapObject{
 	}
 
 	protected void moveWarrior() {
-		move();
+		move(movement);
 		checkForAttack();
 	}
 

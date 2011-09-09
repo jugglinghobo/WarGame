@@ -81,17 +81,18 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 			case (GGMouse.lClick): {
 				if (actor != null) {
 					MapObject clicked = (MapObject) actor;
+					Output.clearPanel();
 					if (activePlayer.getMapObjects().contains(clicked)) {
 						clicked.offerActions();
 					} else {
 						activateMouseListener(false);
-						Output.clearPanel();
+						Output.println(clicked.toString());
 						clearMap();
 					}
 				}
-				refresh();
 			} break; 
 		}
+		refresh();
 	}
 
 	public ArrayList<City> getCities() {
@@ -132,15 +133,15 @@ public class Map extends GameGrid implements GGMouseListener, GGMouseTouchListen
 		
 	}
 
-	public ArrayList<Location> getColoredLocs() {
-		return this.coloredLocs;
-	}
-
 	public void addMapObjectActor(MapObject mapObj) {
 		activateMouseListener(false);
 		addActor(mapObj, mapObj.getLocation());
-		mapObj.addMouseTouchListener(this, GGMouse.lClick, false);
+		mapObj.addMouseTouchListener(this, GGMouse.lClick | GGMouse.rClick, false);
 		activateMouseListener(true);
 		refresh();
+	}
+	
+	public ArrayList<Location> getColoredLocs() {
+		return this.coloredLocs;
 	}
 }
